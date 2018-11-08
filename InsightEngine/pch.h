@@ -22,6 +22,7 @@
 #include <memory>
 #include <assert.h>
 
+#include <wrl.h>
 // DirectX includes
 #include <d3d11_1.h>
 #include <d3dCompiler.h>

@@ -2,7 +2,7 @@
 #include "RenderWindow.h"
 #include "IMsgProc.h"
 
-using namespace xin;
+using namespace insight;
 
 int WINAPI WinMain(HINSTANCE h_Inst, HINSTANCE h_PrevInst, LPSTR lpcmdline, int ncmdshow){
 	WindowProcessor winproc;
