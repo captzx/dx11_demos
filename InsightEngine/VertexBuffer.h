@@ -4,13 +4,17 @@
 namespace insight {
 	class VertexBuffer :public Buffer {
 	public:
-		VertexBuffer(Microsoft::WRL::ComPtr<ID3D11Buffer> pBuffer);
+		VertexBuffer(std::shared_ptr<ID3D11Buffer> pBuffer);
 		virtual ~VertexBuffer();
+
+		void SetVertexSize(int size);
+		void SetVertexCount(int count);
 
 	public:
 		ResourceType	GetType();
 
 	protected:
-
+		int _size;
+		int _count;
 	};
 }

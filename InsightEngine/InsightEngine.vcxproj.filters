@@ -56,6 +56,9 @@
     <Filter Include="Rendering\Pipeline System\Stages\Programmable Stages\Shader\Reflection">
       <UniqueIdentifier>{78a4d320-d1d7-4cd4-bec3-ba8188ca7050}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Rendering\Pipeline System\Stages\Common">
+      <UniqueIdentifier>{48470237-7ea0-4a28-b329-f20a952da466}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -112,6 +115,81 @@
     <ClInclude Include="HullShader.h">
       <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader</Filter>
     </ClInclude>
+    <ClInclude Include="ShaderResourceView.h">
+      <Filter>Rendering\Resource System\Resource Views</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderResourceViewConfig.h">
+      <Filter>Rendering\Resource System\Resource Views</Filter>
+    </ClInclude>
+    <ClInclude Include="InputAssemblerStage.h">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Stages</Filter>
+    </ClInclude>
+    <ClInclude Include="InputAssemblerState.h">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\State</Filter>
+    </ClInclude>
+    <ClInclude Include="SwapChainConfig.h">
+      <Filter>Rendering\DXGI</Filter>
+    </ClInclude>
+    <ClInclude Include="SwapChain.h">
+      <Filter>Rendering\DXGI</Filter>
+    </ClInclude>
+    <ClInclude Include="TStateMonitor.h">
+      <Filter>Rendering\Pipeline System\Stages\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="TStateMonitorImpl.h">
+      <Filter>Rendering\Pipeline System\Stages\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="TStateArrayMonitor.h">
+      <Filter>Rendering\Pipeline System\Stages\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="TStateArrayMonitorImpl.h">
+      <Filter>Rendering\Pipeline System\Stages\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexShaderStage.h">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Stages</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderStage.h">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Stages</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderStageState.h">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\State</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderReflection.h">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader\Reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="HullShaderStage.h">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Stages</Filter>
+    </ClInclude>
+    <ClInclude Include="PipelineManager.h">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryShader.h">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="DomainShaderStage.h">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Stages</Filter>
+    </ClInclude>
+    <ClInclude Include="GeometryShaderStage.h">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Stages</Filter>
+    </ClInclude>
+    <ClInclude Include="PixelShaderStage.h">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Stages</Filter>
+    </ClInclude>
+    <ClInclude Include="ComputeShaderStage.h">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Stages</Filter>
+    </ClInclude>
+    <ClInclude Include="StreamOutputStage.h">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Stages</Filter>
+    </ClInclude>
+    <ClInclude Include="RasterizerStage.h">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Stages</Filter>
+    </ClInclude>
+    <ClInclude Include="OutputMergerStage.h">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Stages</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -165,6 +243,69 @@
     </ClCompile>
     <ClCompile Include="HullShader.cpp">
       <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderResourceView.cpp">
+      <Filter>Rendering\Resource System\Resource Views</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderResourceViewConfig.cpp">
+      <Filter>Rendering\Resource System\Resource Views</Filter>
+    </ClCompile>
+    <ClCompile Include="InputAssemblerStage.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="InputAssemblerState.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\State</Filter>
+    </ClCompile>
+    <ClCompile Include="SwapChainConfig.cpp">
+      <Filter>Rendering\DXGI</Filter>
+    </ClCompile>
+    <ClCompile Include="SwapChain.cpp">
+      <Filter>Rendering\DXGI</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderStage.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderStageState.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\State</Filter>
+    </ClCompile>
+    <ClCompile Include="VertesShaderStage.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderReflection.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader\Reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="HullShaderStage.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="PipelineManager.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryShader.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="DomainShaderStage.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="GeometryShaderStage.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="PixelShaderStage.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="ComputeShaderStage.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="StreamOutputStage.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="RasterizerStage.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="OutputMergerStage.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Stages</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
