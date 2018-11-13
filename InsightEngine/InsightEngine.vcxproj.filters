@@ -59,6 +59,12 @@
     <Filter Include="Rendering\Pipeline System\Stages\Common">
       <UniqueIdentifier>{48470237-7ea0-4a28-b329-f20a952da466}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects">
+      <UniqueIdentifier>{007688f7-1697-4ded-9e1f-eb00f4d66c5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Scene Objects">
+      <UniqueIdentifier>{6fdb4c1d-592e-4ba0-b8b1-bac9f9bbbc93}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -68,9 +74,6 @@
       <Filter>Application</Filter>
     </ClInclude>
     <ClInclude Include="RenderWindow.h">
-      <Filter>Application</Filter>
-    </ClInclude>
-    <ClInclude Include="IMsgProc.h">
       <Filter>Application</Filter>
     </ClInclude>
     <ClInclude Include="Application.h">
@@ -190,6 +193,15 @@
     <ClInclude Include="OutputMergerStage.h">
       <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Stages</Filter>
     </ClInclude>
+    <ClInclude Include="IWindowProc.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Objects\Scene Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -201,7 +213,6 @@
     <ClCompile Include="RenderWindow.cpp">
       <Filter>Application</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="Application.cpp">
       <Filter>Application</Filter>
     </ClCompile>
@@ -306,6 +317,15 @@
     </ClCompile>
     <ClCompile Include="OutputMergerStage.cpp">
       <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Objects\Scene Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Utilities</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

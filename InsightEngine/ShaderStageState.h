@@ -11,7 +11,7 @@ namespace insight {
 
 		void ClearState();
 
-		void SetSisterState();
+		void SetIntentState();
 		void ResetUpdateFlags();
 
 		TStateMonitor<int> ShaderProgram;
@@ -23,6 +23,6 @@ namespace insight {
 
 	protected:
 		D3D_FEATURE_LEVEL _featureLevel;
-		ShaderStageState* _pSisterState;
+		ShaderStageState* _pIntentState;
 	};
 }

@@ -1,29 +1,24 @@
 #include "pch.h"
-#include "RenderWindow.h"
-#include "IMsgProc.h"
+#include "Application.h"
 
 using namespace insight;
 
 int WINAPI WinMain(HINSTANCE h_Inst, HINSTANCE h_PrevInst, LPSTR lpcmdline, int ncmdshow){
-	WindowProcessor winproc;
-	RenderWindow window;
-	window.Initialize(&winproc);
+	Application *pApp = Application::GetApplication();
 
-	MSG msg;
-
-	while (true){
-		while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)){
-			if (msg.message == WM_QUIT){
-				return true;
-			}
-
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
-
-		// Call the overloaded application update function.
-		//Update();
-		//TakeScreenShot();
+	if (!pApp) {
+		Log::Get().Write("There was no instance of the application.");
+		return -1;
 	}
-	return true;
+
+	if (!pApp->ConfigureEngineComponent()) {
+		pApp->ShutdownEngineComponent();
+		return 0;
+	}
+
+	pApp->Initialize();
+	pApp->MessageLoop();
+	pApp->Shutdown();
+	pApp->ShutdownEngineComponent();
+	return 0;
 }
