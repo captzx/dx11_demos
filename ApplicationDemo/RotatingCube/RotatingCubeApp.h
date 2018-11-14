@@ -1,13 +1,7 @@
 #pragma once
-
 #include "Application.h"
-#include "RenderWindow.h"
-#include "Renderer.h"
 
-
-using namespace insight;
-
-class RotatingCubeApp :public Application {
+class RotatingCubeApp: public Application {
 public:
 	RotatingCubeApp();
 
@@ -19,9 +13,11 @@ public:
 	virtual void Update();
 	virtual void Shutdown();
 
+	virtual std::wstring GetName();
+
 protected:
 	Renderer* _pRenderer;
-	RenderWindow* _pWindow;
+	Win32Window* _pWindow;
 
 	int _swapChain;
 	std::shared_ptr<Resource> _pRenderTarget;

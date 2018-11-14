@@ -73,13 +73,7 @@
     <ClInclude Include="Window.h">
       <Filter>Application</Filter>
     </ClInclude>
-    <ClInclude Include="RenderWindow.h">
-      <Filter>Application</Filter>
-    </ClInclude>
     <ClInclude Include="Application.h">
-      <Filter>Application</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderApplication.h">
       <Filter>Application</Filter>
     </ClInclude>
     <ClInclude Include="Renderer.h">
@@ -202,6 +196,9 @@
     <ClInclude Include="Timer.h">
       <Filter>Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="Win32Window.h">
+      <Filter>Application</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -210,13 +207,7 @@
     <ClCompile Include="Window.cpp">
       <Filter>Application</Filter>
     </ClCompile>
-    <ClCompile Include="RenderWindow.cpp">
-      <Filter>Application</Filter>
-    </ClCompile>
     <ClCompile Include="Application.cpp">
-      <Filter>Application</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderApplication.cpp">
       <Filter>Application</Filter>
     </ClCompile>
     <ClCompile Include="Renderer.cpp">
@@ -326,6 +317,9 @@
     </ClCompile>
     <ClCompile Include="Timer.cpp">
       <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Win32Window.cpp">
+      <Filter>Application</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

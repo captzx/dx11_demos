@@ -1,5 +1,5 @@
 #pragma once
-#include "IMsgProc.h"
+#include "IWindowProc.h"
 
 namespace insight {
 	class Window{
@@ -7,11 +7,12 @@ namespace insight {
 		Window();
 		virtual ~Window();
 	public:
-		virtual void Initialize(IMsgProc* WindowProcObj) = 0;
+		virtual void Initialize(IWindowProc* windowProc) = 0;
 		virtual void Shutdown() = 0;
 		virtual void Paint() = 0;
 	public:
 		HWND GetHandle();
+
 		int GetLeft();
 		int GetTop();
 
@@ -25,7 +26,7 @@ namespace insight {
 		void SetHeight(int height);
 
 		std::wstring GetCaption();
-		void SetCaption(std::wstring& caption);
+		void SetCaption(const std::wstring& caption);
 
 		void SetSize(int width, int height);
 		void SetPosition(int left, int top);
@@ -34,18 +35,20 @@ namespace insight {
 		void SetSwapChain(int swapchain);
 
 		void ResizeWindow(int width, int height);
+
 	protected:
-		void UpdateWindowState();
+		HWND			_hWnd;
+		std::wstring	_caption;
+		int				_width;
+		int				_height;
+		int				_left;
+		int				_top;
 
-		HWND			hwnd;
-		std::wstring	caption;
-		int				width;
-		int				height;
-		int				left;
-		int				top;
+		int				_swapChain;
 
-		int				swapChain;
+		DWORD			_style;
 
-		DWORD			style;
+
+		void _UpdateWindowState();
 	};
 }

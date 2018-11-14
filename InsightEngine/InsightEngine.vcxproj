@@ -142,7 +142,6 @@
     <ClInclude Include="PipelineManager.h" />
     <ClInclude Include="PixelShaderStage.h" />
     <ClInclude Include="RasterizerStage.h" />
-    <ClInclude Include="RenderApplication.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderTargetView.h" />
     <ClInclude Include="RenderTargetViewConfig.h" />
@@ -166,7 +165,7 @@
     <ClInclude Include="VertexShader.h" />
     <ClInclude Include="VertexShaderStage.h" />
     <ClInclude Include="Window.h" />
-    <ClInclude Include="RenderWindow.h" />
+    <ClInclude Include="Win32Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -191,7 +190,6 @@
     <ClCompile Include="PipelineManager.cpp" />
     <ClCompile Include="PixelShaderStage.cpp" />
     <ClCompile Include="RasterizerStage.cpp" />
-    <ClCompile Include="RenderApplication.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderTargetView.cpp" />
     <ClCompile Include="RenderTargetViewConfig.cpp" />
@@ -211,7 +209,7 @@
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="VertexShader.cpp" />
     <ClCompile Include="Window.cpp" />
-    <ClCompile Include="RenderWindow.cpp" />
+    <ClCompile Include="Win32Window.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

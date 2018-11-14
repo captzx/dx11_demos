@@ -1,14 +1,15 @@
 #pragma once
-#include "IMsgProc.h"
 #include "Window.h"
 
 namespace insight {
-	class RenderWindow : public Window{
+	class IWindowProc;
+	class Win32Window : public Window{
 	public:
-		RenderWindow();
-		virtual ~RenderWindow();
+		Win32Window();
+		virtual ~Win32Window();
+
 	public:
-		virtual void Initialize(IMsgProc* WindowProcObj);
+		virtual void Initialize(IWindowProc* windowProc);
 		virtual void Shutdown();
 		virtual void Paint();
 

@@ -33,9 +33,8 @@ namespace insight {
 		bool Initialize(D3D_DRIVER_TYPE driverType, D3D_FEATURE_LEVEL featureLevel);
 		void Shutdown();
 
-		void Present(HWND hWnd = 0, int SwapChain = -1, UINT SyncInterval = 0, UINT PresentFlags = 0);
-
 		int CreateSwapChain(SwapChainConfig* pConfig);
+		void Present(HWND hWnd = 0, int SwapChain = -1, UINT SyncInterval = 0, UINT PresentFlags = 0);
 
 		std::shared_ptr<Resource> CreateVertexBuffer(BufferConfig* pConfig, D3D11_SUBRESOURCE_DATA* pData);
 		std::shared_ptr<Resource> CreateIndexBuffer(BufferConfig* pConfig, D3D11_SUBRESOURCE_DATA* pData);
@@ -47,6 +46,8 @@ namespace insight {
 	
 		int CreateInputLayout(std::vector<D3D11_INPUT_ELEMENT_DESC>& elements, int ShaderID);
 
+		int StoreNewResource(Resource* pResource);
+		int GetUnusedResourceIndex();
 
 		std::shared_ptr<ID3D11InputLayout> GetInputLayout(int index);
 	protected:
@@ -54,9 +55,10 @@ namespace insight {
 
 		static std::shared_ptr <Renderer> _spRenderer;
 
-		std::shared_ptr<ID3D11Device> _pDevice;
+		ID3D11Device* _pDevice;
+		ID3D11Debug* _pDebugger;
 
-		std::vector<std::shared_ptr<Resource>> _vResources;
+		std::vector<Resource*> _vResources;
 
 		std::vector<ShaderResourceView> _vShaderResourceViews;
 		std::vector<RenderTargetView> _vRenderTargetViews;

@@ -7,7 +7,7 @@ int WINAPI WinMain(HINSTANCE h_Inst, HINSTANCE h_PrevInst, LPSTR lpcmdline, int 
 	Application *pApp = Application::GetApplication();
 
 	if (!pApp) {
-		Log::Get().Write("There was no instance of the application.");
+		LOG(ERROR) << "There was no instance of the application.";
 		return -1;
 	}
 

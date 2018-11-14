@@ -23,10 +23,11 @@ namespace insight {
 	class Resource;
 
 	class PipelineManager {
+	public:
 		PipelineManager();
 		~PipelineManager();
 
-		void SetDeviceContext(std::shared_ptr<ID3D11DeviceContext> pContext, D3D_FEATURE_LEVEL featureLevel);
+		void SetDeviceContext(ID3D11DeviceContext* pContext, D3D_FEATURE_LEVEL featureLevel);
 		ID3D11DeviceContext* GetDeviceContext();
 
 		void BindConstantBufferParameter(ShaderType tpye, RenderParmater* pParmater, UINT slot, IParmaterManager* pParmaterManager);
@@ -47,9 +48,11 @@ namespace insight {
 		void ClearPipelineState();
 		void ClearPipelineSTVs();
 
-
+	public:
+		static const int NumQueries = 3;
+		ID3D11Query* _pQueries[NumQueries];
 	private:
-		std::shared_ptr<ID3D11DeviceContext> _pContext;
+		ID3D11DeviceContext* _pContext;
 
 		VertexShaderStage _vertexShaderStage;
 		HullShaderStage _hullShaderStage;
