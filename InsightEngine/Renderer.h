@@ -11,8 +11,9 @@ namespace insight {
 
 	class SwapChain;
 
-	class ShaderResourceView;
 	class RenderTargetView;
+	class DepthStencilView;
+	class ShaderResourceView;
 
 	class Shader;
 
@@ -36,20 +37,22 @@ namespace insight {
 		int CreateSwapChain(SwapChainConfig* pConfig);
 		void Present(HWND hWnd = 0, int SwapChain = -1, UINT SyncInterval = 0, UINT PresentFlags = 0);
 
-		std::shared_ptr<Resource> CreateVertexBuffer(BufferConfig* pConfig, D3D11_SUBRESOURCE_DATA* pData);
-		std::shared_ptr<Resource> CreateIndexBuffer(BufferConfig* pConfig, D3D11_SUBRESOURCE_DATA* pData);
-		std::shared_ptr<Resource> CreateConstantBuffer(BufferConfig* pConfig, D3D11_SUBRESOURCE_DATA* pData, bool bAutoUpdate = true);
+		std::shared_ptr<ResourceProxy> CreateVertexBuffer(BufferConfig* pConfig, D3D11_SUBRESOURCE_DATA* pData);
+		std::shared_ptr<ResourceProxy> CreateIndexBuffer(BufferConfig* pConfig, D3D11_SUBRESOURCE_DATA* pData);
+		std::shared_ptr<ResourceProxy> CreateConstantBuffer(BufferConfig* pConfig, D3D11_SUBRESOURCE_DATA* pData, bool bAutoUpdate = true);
 		// ...
 
-		int CreateShaderResourceView(int ResourceID, D3D11_SHADER_RESOURCE_VIEW_DESC* pDesc);
 		int CreateRenderTargetView(int ResourceID, D3D11_RENDER_TARGET_VIEW_DESC* pDesc);
+		int CreateDepthStencilView(int ResourceID, D3D11_DEPTH_STENCIL_VIEW_DESC* pDesc);
 	
 		int CreateInputLayout(std::vector<D3D11_INPUT_ELEMENT_DESC>& elements, int ShaderID);
 
+		int CreateViewPort(D3D11_VIEWPORT viewport);
+
+		Resource* GetResourceByIndex(int id);
 		int StoreNewResource(Resource* pResource);
 		int GetUnusedResourceIndex();
 
-		std::shared_ptr<ID3D11InputLayout> GetInputLayout(int index);
 	protected:
 		D3D_FEATURE_LEVEL _featureLevel;
 
@@ -62,6 +65,7 @@ namespace insight {
 
 		std::vector<ShaderResourceView> _vShaderResourceViews;
 		std::vector<RenderTargetView> _vRenderTargetViews;
+		std::vector<DepthStencilView>_vDepthStencilViews;
 
 		std::vector<std::shared_ptr<InputLayout>> _vInputLayouts;
 		std::vector<ViewPort> _vViewPorts;

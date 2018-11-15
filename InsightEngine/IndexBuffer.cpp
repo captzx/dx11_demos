@@ -3,7 +3,7 @@
 
 using namespace insight;
 
-IndexBuffer::IndexBuffer(std::shared_ptr<ID3D11Buffer> pBuffer) {
+IndexBuffer::IndexBuffer(ID3D11Buffer* pBuffer) {
 	_pBuffer = pBuffer;
 }
 

@@ -87,5 +87,5 @@ void Buffer::UnMap() {
 }
 
 ID3D11Buffer* Buffer::GetResource() {
-	return _pBuffer.get();
+	return _pBuffer;
 }

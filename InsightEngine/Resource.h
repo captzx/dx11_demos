@@ -2,8 +2,7 @@
 #include "Renderer.h"
 
 namespace insight {
-	enum ResourceType
-	{
+	enum ResourceType{
 		RT_VERTEXBUFFER = 0x010000,
 		RT_INDEXBUFFER = 0x020000,
 		RT_CONSTANTBUFFER = 0x030000,
@@ -20,7 +19,13 @@ namespace insight {
 		Resource();
 		virtual ~Resource();
 
+		unsigned short GetInnerID();
+
 		virtual ID3D11Resource* GetResource() = 0;
 		virtual ResourceType GetType() = 0;
+
+	protected:
+		static unsigned short _usResourceUID;
+		unsigned short _uInnerID;
 	};
 }

@@ -26,11 +26,9 @@ namespace insight {
 		void SetSwapEffect(DXGI_SWAP_EFFECT SwapEffect);
 		void SetFlags(UINT Flags);
 
-		DXGI_SWAP_CHAIN_DESC GetSwapChainDesc();
+		DXGI_SWAP_CHAIN_DESC GetDesc();
 
 	protected:
 		DXGI_SWAP_CHAIN_DESC _state;
-
-		friend Renderer;
 	};
 }

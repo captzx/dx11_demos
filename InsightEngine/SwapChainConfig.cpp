@@ -89,3 +89,7 @@ void SwapChainConfig::SetSwapEffect(DXGI_SWAP_EFFECT SwapEffect) {
 void SwapChainConfig::SetFlags(UINT Flags) {
 	_state.Flags = Flags;
 }
+
+DXGI_SWAP_CHAIN_DESC SwapChainConfig::GetDesc() {
+	return _state;
+}

@@ -4,10 +4,11 @@
 namespace insight{
 	class ConstantBuffer : public Buffer {
 	public:
-		ConstantBuffer();
+		ConstantBuffer(ID3D11Buffer* pBuffer);
 		virtual ~ConstantBuffer();
 
-
+		void						SetAutoUpdate(bool enable);
+		bool						GetAutoUpdate();
 	public:
 		ResourceType GetType();
 	};

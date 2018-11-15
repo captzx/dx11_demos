@@ -37,7 +37,7 @@ namespace insight {
 		ID3D11Buffer* GetResource();
 
 	protected:
-		std::shared_ptr<ID3D11Buffer> _pBuffer;
+		ID3D11Buffer* _pBuffer;
 
 		D3D11_BUFFER_DESC _desiredDesc;
 		D3D11_BUFFER_DESC _actualDesc;

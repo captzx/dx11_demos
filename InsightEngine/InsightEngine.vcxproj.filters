@@ -124,12 +124,6 @@
     <ClInclude Include="InputAssemblerState.h">
       <Filter>Rendering\Pipeline System\Stages\Programmable Stages\State</Filter>
     </ClInclude>
-    <ClInclude Include="SwapChainConfig.h">
-      <Filter>Rendering\DXGI</Filter>
-    </ClInclude>
-    <ClInclude Include="SwapChain.h">
-      <Filter>Rendering\DXGI</Filter>
-    </ClInclude>
     <ClInclude Include="TStateMonitor.h">
       <Filter>Rendering\Pipeline System\Stages\Common</Filter>
     </ClInclude>
@@ -199,6 +193,30 @@
     <ClInclude Include="Win32Window.h">
       <Filter>Application</Filter>
     </ClInclude>
+    <ClInclude Include="Texture2D.h">
+      <Filter>Rendering\Resource System\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture2DConfig.h">
+      <Filter>Rendering\Resource System\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="SwapChain.h">
+      <Filter>Rendering\Resource System\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="SwapChainConfig.h">
+      <Filter>Rendering\Resource System\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceProxy.h">
+      <Filter>Rendering\Resource System</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthStencilView.h">
+      <Filter>Rendering\Resource System\Resource Views</Filter>
+    </ClInclude>
+    <ClInclude Include="DepthStencilViewConfig.h">
+      <Filter>Rendering\Resource System\Resource Views</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewPort.h">
+      <Filter>Rendering\Pipeline System\Stages\Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -258,12 +276,6 @@
     <ClCompile Include="InputAssemblerState.cpp">
       <Filter>Rendering\Pipeline System\Stages\Programmable Stages\State</Filter>
     </ClCompile>
-    <ClCompile Include="SwapChainConfig.cpp">
-      <Filter>Rendering\DXGI</Filter>
-    </ClCompile>
-    <ClCompile Include="SwapChain.cpp">
-      <Filter>Rendering\DXGI</Filter>
-    </ClCompile>
     <ClCompile Include="ShaderStage.cpp">
       <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Stages</Filter>
     </ClCompile>
@@ -320,6 +332,30 @@
     </ClCompile>
     <ClCompile Include="Win32Window.cpp">
       <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture2D.cpp">
+      <Filter>Rendering\Resource System\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture2DConfig.cpp">
+      <Filter>Rendering\Resource System\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="SwapChain.cpp">
+      <Filter>Rendering\Resource System\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="SwapChainConfig.cpp">
+      <Filter>Rendering\Resource System\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceProxy.cpp">
+      <Filter>Rendering\Resource System</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthStencilView.cpp">
+      <Filter>Rendering\Resource System\Resource Views</Filter>
+    </ClCompile>
+    <ClCompile Include="DepthStencilViewConfig.cpp">
+      <Filter>Rendering\Resource System\Resource Views</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewPort.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Common</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

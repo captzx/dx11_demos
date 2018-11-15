@@ -128,6 +128,8 @@
     <ClInclude Include="BufferConfig.h" />
     <ClInclude Include="ComputeShaderStage.h" />
     <ClInclude Include="ConstantBuffer.h" />
+    <ClInclude Include="DepthStencilView.h" />
+    <ClInclude Include="DepthStencilViewConfig.h" />
     <ClInclude Include="DomainShaderStage.h" />
     <ClInclude Include="GeometryShader.h" />
     <ClInclude Include="GeometryShaderStage.h" />
@@ -146,6 +148,7 @@
     <ClInclude Include="RenderTargetView.h" />
     <ClInclude Include="RenderTargetViewConfig.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="ResourceProxy.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderReflection.h" />
@@ -156,6 +159,8 @@
     <ClInclude Include="StreamOutputStage.h" />
     <ClInclude Include="SwapChain.h" />
     <ClInclude Include="SwapChainConfig.h" />
+    <ClInclude Include="Texture2D.h" />
+    <ClInclude Include="Texture2DConfig.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="TStateArrayMonitor.h" />
     <ClInclude Include="TStateArrayMonitorImpl.h" />
@@ -164,6 +169,7 @@
     <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="VertexShader.h" />
     <ClInclude Include="VertexShaderStage.h" />
+    <ClInclude Include="ViewPort.h" />
     <ClInclude Include="Window.h" />
     <ClInclude Include="Win32Window.h" />
   </ItemGroup>
@@ -174,6 +180,8 @@
     <ClCompile Include="BufferConfig.cpp" />
     <ClCompile Include="ComputeShaderStage.cpp" />
     <ClCompile Include="ConstantBuffer.cpp" />
+    <ClCompile Include="DepthStencilView.cpp" />
+    <ClCompile Include="DepthStencilViewConfig.cpp" />
     <ClCompile Include="DomainShaderStage.cpp" />
     <ClCompile Include="GeometryShader.cpp" />
     <ClCompile Include="GeometryShaderStage.cpp" />
@@ -194,6 +202,7 @@
     <ClCompile Include="RenderTargetView.cpp" />
     <ClCompile Include="RenderTargetViewConfig.cpp" />
     <ClCompile Include="Resource.cpp" />
+    <ClCompile Include="ResourceProxy.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderReflection.cpp" />
@@ -204,10 +213,13 @@
     <ClCompile Include="StreamOutputStage.cpp" />
     <ClCompile Include="SwapChain.cpp" />
     <ClCompile Include="SwapChainConfig.cpp" />
+    <ClCompile Include="Texture2D.cpp" />
+    <ClCompile Include="Texture2DConfig.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="VertesShaderStage.cpp" />
     <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="VertexShader.cpp" />
+    <ClCompile Include="ViewPort.cpp" />
     <ClCompile Include="Window.cpp" />
     <ClCompile Include="Win32Window.cpp" />
   </ItemGroup>

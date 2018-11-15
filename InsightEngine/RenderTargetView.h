@@ -3,12 +3,12 @@
 namespace insight {
 	class RenderTargetView {
 	public:
-		RenderTargetView(std::shared_ptr<RenderTargetView> pViewConfig);
+		RenderTargetView(ID3D11RenderTargetView* pRenderTargetView);
 		~RenderTargetView();
 
-		ID3D11RenderTargetView* GetRTV();
+		ID3D11RenderTargetView* Get();
 
 	protected:
-		std::shared_ptr<ID3D11RenderTargetView> _pRenderTargetView;
+		ID3D11RenderTargetView* _pRenderTargetView;
 	};
 }

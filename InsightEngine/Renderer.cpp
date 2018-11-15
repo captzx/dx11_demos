@@ -1,9 +1,25 @@
 #include "pch.h"
 #include "Renderer.h"
+
 #include "BufferConfig.h"
 #include "VertexBuffer.h"
+#include "IndexBuffer.h"
+#include "ConstantBuffer.h"
+
 #include "PipelineManager.h"
+
+#include "SwapChain.h"
+#include "Texture2D.h"
+
 #include "SwapChainConfig.h"
+#include "Texture2DConfig.h"
+
+#include "ResourceProxy.h"
+
+#include "RenderTargetView.h"
+#include "DepthStencilView.h"
+
+#include "ViewPort.h"
 
 using namespace insight;
 
@@ -19,8 +35,56 @@ std::shared_ptr <Renderer> Renderer::Get() {
 	return _spRenderer;
 }
 
-std::shared_ptr<Resource> Renderer::CreateVertexBuffer(BufferConfig* pConfig, D3D11_SUBRESOURCE_DATA* pData) {
-	
+std::shared_ptr<ResourceProxy> Renderer::CreateVertexBuffer(BufferConfig* pConfig, D3D11_SUBRESOURCE_DATA* pData) {
+	ID3D11Buffer* pBuffer;
+	HRESULT hr = _pDevice->CreateBuffer(&pConfig->GetBufferDesc(), pData, &pBuffer);
+
+	if (pBuffer) {
+		VertexBuffer* pVertexBuffer = new VertexBuffer(pBuffer);
+		pVertexBuffer->SetDesiredDescription(pConfig->GetBufferDesc());
+
+		int ResourceID = StoreNewResource(pVertexBuffer);
+		std::shared_ptr<ResourceProxy> Proxy(new ResourceProxy(ResourceID, pConfig, this));
+
+		return Proxy;
+	}
+
+	return std::shared_ptr<ResourceProxy>(new ResourceProxy());
+}
+
+std::shared_ptr<ResourceProxy> Renderer::CreateIndexBuffer(BufferConfig* pConfig, D3D11_SUBRESOURCE_DATA* pData) {
+	ID3D11Buffer* pBuffer;
+	HRESULT hr = _pDevice->CreateBuffer(&pConfig->GetBufferDesc(), pData, &pBuffer);
+
+	if (pBuffer){
+		IndexBuffer* pIndexBuffer = new IndexBuffer(pBuffer);
+		pIndexBuffer->SetDesiredDescription(pConfig->GetBufferDesc());
+
+		int ResourceID = StoreNewResource(pIndexBuffer);
+		std::shared_ptr<ResourceProxy> Proxy(new ResourceProxy(ResourceID, pConfig, this));
+
+		return Proxy;
+	}
+
+	return std::shared_ptr<ResourceProxy>(new ResourceProxy());
+}
+
+std::shared_ptr<ResourceProxy> Renderer::CreateConstantBuffer(BufferConfig* pConfig, D3D11_SUBRESOURCE_DATA* pData, bool bAutoUpdate = true) {
+	ID3D11Buffer* pBuffer;
+	HRESULT hr = _pDevice->CreateBuffer(&pConfig->GetBufferDesc(), pData, &pBuffer);
+
+	if (pBuffer) {
+		ConstantBuffer* pConstantBuffer = new ConstantBuffer(pBuffer);
+		pConstantBuffer->SetDesiredDescription(pConfig->GetBufferDesc());
+		pConstantBuffer->SetAutoUpdate(bAutoUpdate);
+
+		int ResourceID = StoreNewResource(pConstantBuffer);
+		std::shared_ptr<ResourceProxy> Proxy(new ResourceProxy(ResourceID, pConfig, this));
+
+		return Proxy;
+	}
+
+	return std::shared_ptr<ResourceProxy>(new ResourceProxy());
 }
 
 bool Renderer::Initialize(D3D_DRIVER_TYPE driverType, D3D_FEATURE_LEVEL featureLevel) {
@@ -30,10 +94,9 @@ bool Renderer::Initialize(D3D_DRIVER_TYPE driverType, D3D_FEATURE_LEVEL featureL
 	hr = CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&pFactory));
 
 	IDXGIAdapter* pCurrentAdapter;
-	std::vector<IDXGIAdapter*> vAdapters;
-
-	while( pFactory->EnumAdapters( static_cast<UINT>(vAdapters.size()), &pCurrentAdapter) != DXGI_ERROR_NOT_FOUND ){
-		vAdapters.push_back( pCurrentAdapter );
+	std::vector<IDXGIAdapter*> vpAdapters;
+	while( pFactory->EnumAdapters(static_cast<UINT>(vpAdapters.size()), &pCurrentAdapter) != DXGI_ERROR_NOT_FOUND ){
+		vpAdapters.push_back( pCurrentAdapter );
 
 		DXGI_ADAPTER_DESC desc;
 		pCurrentAdapter->GetDesc(&desc);
@@ -45,12 +108,10 @@ bool Renderer::Initialize(D3D_DRIVER_TYPE driverType, D3D_FEATURE_LEVEL featureL
 #endif
 
 	ID3D11DeviceContext* pContext;
-
 	D3D_FEATURE_LEVEL level[] = { featureLevel };
 	D3D_FEATURE_LEVEL createdLevel;
-
 	if (DriverType == D3D_DRIVER_TYPE_HARDWARE){
-		for (auto pAdapter : vAdapters){
+		for (auto pAdapter : vpAdapters){
 			hr = D3D11CreateDevice(
 				pAdapter,
 				D3D_DRIVER_TYPE_UNKNOWN,
@@ -63,12 +124,10 @@ bool Renderer::Initialize(D3D_DRIVER_TYPE driverType, D3D_FEATURE_LEVEL featureL
 				&createdLevel,
 				&pContext);
 
-			if (hr == S_OK)
-				break;
+			if (hr == S_OK) break;
 		}
 	}
-	else
-	{
+	else{
 		hr = D3D11CreateDevice(
 			nullptr,
 			driverType,
@@ -81,76 +140,38 @@ bool Renderer::Initialize(D3D_DRIVER_TYPE driverType, D3D_FEATURE_LEVEL featureL
 			&createdLevel,
 			&pContext);
 	}
-
 	if (FAILED(hr)) {
 		LOG(ERROR) << "D3D11CreateDevice";
 		return false;
 	}
 
-	// Grab a copy of the feature level for use by the rest of the rendering system.
-	_featureLevel = _pDevice->GetFeatureLevel();
+	_featureLevel = createdLevel;
 
-	// Create the renderer components here, including the parameter manager, pipeline manager, and resource manager.
-
-	//_pParamMgr = new ParameterManager(0);
 	_pImmPipeline = new PipelineManager();
 	_pImmPipeline->SetDeviceContext(pContext, _featureLevel);
-
-	// Rasterizer State (RS) - the first state will be index zero, so no need
-	// to keep a copy of it here.
-
-	RasterizerStateConfig RasterizerState;
-	_pImmPipeline->RasterizerStage.DesiredState.RasterizerState.SetState(CreateRasterizerState(&RasterizerState));
-
-	// Depth Stencil State (DS) - the first state will be index zero, so no need
-	// to keep a copy of it here.
-
-	DepthStencilStateConfig DepthStencilState;
-	_pImmPipeline->OutputMergerStage.DesiredState.DepthStencilState.SetState(CreateDepthStencilState(&DepthStencilState));
-
-	// Output Merger State (OM) - the first state will be index zero, so no need
-	// to keep a copy of it here.
-
-	BlendStateConfig BlendState;
-	_pImmPipeline->OutputMergerStage.DesiredState.BlendState.SetState(CreateBlendState(&BlendState));
-
-
-	// Create the default resource views for each category.  This has the effect
-	// of allowing the '0' index to be the default state.
-
-	_vShaderResourceViews.emplace_back(ShaderResourceViewComPtr());
-	_vUnorderedAccessViews.emplace_back(UnorderedAccessViewComPtr());
-	_vRenderTargetViews.emplace_back(RenderTargetViewComPtr());
-	_vDepthStencilViews.emplace_back(DepthStencilViewComPtr());
-
-
-	// Create a query object to be used to gather statistics on the pipeline.
 
 	D3D11_QUERY_DESC queryDesc;
 	queryDesc.Query = D3D11_QUERY_PIPELINE_STATISTICS;
 	queryDesc.MiscFlags = 0;
 
-	for (int i = 0; i < PipelineManager::NumQueries; ++i)
-	{
+	for (int i = 0; i < PipelineManager::NumQueries; ++i){
 		hr = _pDevice->CreateQuery(&queryDesc, &_pImmPipeline->_pQueries[i]);
-
-		if (FAILED(hr))
-		{
-			//Log::Get().Write(L"Unable to create a query object!");
+		if (FAILED(hr)){
+			LOG(ERROR) << "Unable to create a query object!";
 			Shutdown();
 			return(false);
 		}
 	}
 
-	UINT NumQuality;
-	HRESULT hr1 = _pDevice->CheckMultisampleQualityLevels(DXGI_FORMAT_R8G8B8A8_UNORM, 4, &NumQuality);
+	UINT uMassQuality;
+	hr = _pDevice->CheckMultisampleQualityLevels(DXGI_FORMAT_R8G8B8A8_UNORM, 4, &uMassQuality);
+	// assert(uMassQuality > 0);
 
 	return hr;
 }
 
 void Renderer::Shutdown() {
-	// state.clear()
-	// safe_release()
+	
 }
 
 int Renderer::CreateSwapChain(SwapChainConfig* pConfig) {
@@ -158,39 +179,33 @@ int Renderer::CreateSwapChain(SwapChainConfig* pConfig) {
 
 	IDXGIDevice* pDXGIDevice = nullptr;
 	_pDevice->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void **>(&pDXGIDevice));
+
 	IDXGIAdapter* pDXGIAdapter = nullptr;
 	pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), reinterpret_cast<void **>(&pDXGIAdapter));
+
 	IDXGIFactory* pDXGIFactory = nullptr;
 	pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), reinterpret_cast<void **>(&pDXGIFactory));
 
 	IDXGISwapChain* pSwapChain;
-	hr = pDXGIFactory->CreateSwapChain(_pDevice, &pConfig->_state, &pSwapChain);
-
+	hr = pDXGIFactory->CreateSwapChain(_pDevice, &pConfig->GetDesc(), &pSwapChain);
 	if (FAILED(hr)) {
 		LOG(ERROR) << "Failed to create swap chain!";
 		return hr;
 	}
 
-	ID3D11Texture2D* pSwapChainBuffer;
-	hr = pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void **>(&pSwapChainBuffer));//获得SwapChain中后台缓存 COM组件:pSwapChainBuffer
-
+	ID3D11Texture2D* pSwapChainBackBuffer;
+	hr = pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void **>(&pSwapChainBackBuffer));
 	if (FAILED(hr)) {
 		LOG(ERROR) << "Failed to get swap chain texture resource!";
 		return hr;
 	}
 
-	int ResourceID = StoreNewResource(new Texture2D(pSwapChainBuffer));
+	int ResourceID = StoreNewResource(new Texture2D(pSwapChainBackBuffer));
 
-	// If we get here, then we succeeded in creating our swap chain and it's constituent parts.
-	// Now we create the wrapper object and store the result in our container.
+	Texture2DConfig textureConfig;
+	pSwapChainBackBuffer->GetDesc(&textureConfig.GetDesc());
 
-	Texture2dConfig TextureConfig;
-	pSwapChainBuffer->GetDesc(&TextureConfig.m_State);
-
-	Resource* Proxy(new ResourceProxy(ResourceID, &TextureConfig, this));
-	// With the resource proxy created, create the swap chain wrapper and store it.
-	// The resource proxy can then be used later on by the application to get the
-	// RTV or texture ID if needed.
+	std::shared_ptr<ResourceProxy> Proxy(new ResourceProxy(ResourceID, &textureConfig, this));
 
 	_vSwapChains.push_back(new SwapChain(pSwapChain, Proxy));
 
@@ -237,9 +252,75 @@ void Renderer::Present(HWND hWnd = 0, int swapChain = -1, UINT SyncInterval = 0,
 
 	if (index < _vSwapChains.size()) {
 		SwapChain* pSwapChain = _vSwapChains[swapChain];
-		HRESULT hr = pSwapChain->_pSwapChain->Present(SyncInterval, PresentFlags);
+		HRESULT hr = pSwapChain->Get()->Present(SyncInterval, PresentFlags);
 	}
 	else {
 		LOG(ERROR) << "Tried to present an invalid swap chain index!";
 	}
+}
+
+
+int Renderer::CreateRenderTargetView(int ResourceID, D3D11_RENDER_TARGET_VIEW_DESC* pDesc) {
+	ID3D11Resource* pRawResource;
+	Resource* pResource = GetResourceByIndex(ResourceID);
+
+	if (pResource) {
+		pRawResource = pResource->GetResource();
+
+		if (pRawResource) {
+			ID3D11RenderTargetView* pRenderTargetView = nullptr;
+			_pDevice->CreateRenderTargetView(pRawResource, pDesc, &pRenderTargetView);
+
+			if (pRenderTargetView) {
+				_vRenderTargetViews.push_back(pRenderTargetView);
+				return _vRenderTargetViews.size()-1;
+			}
+		}
+	}
+}
+
+int Renderer::CreateDepthStencilView(int ResourceID, D3D11_DEPTH_STENCIL_VIEW_DESC* pDesc) {
+	ID3D11Resource* pRawResource;
+	Resource* pResource = GetResourceByIndex(ResourceID);
+
+	if (pResource) {
+		pRawResource = pResource->GetResource();
+
+		if (pRawResource) {
+			ID3D11DepthStencilView* pDepthStencilView = nullptr;
+			_pDevice->CreateDepthStencilView(pRawResource, pDesc, &pDepthStencilView);
+
+			if (pDepthStencilView) {
+				_vDepthStencilViews.push_back(pDepthStencilView);
+				return _vDepthStencilViews.size() - 1;
+			}
+		}
+	}
+}
+
+Resource* Renderer::GetResourceByIndex(int id){
+	Resource* pResource = 0;
+
+	unsigned int index = id & 0xffff;
+	int innerID = (id & 0xffff0000) >> 16;
+
+	if (index < _vResources.size()) {
+		pResource = _vResources[index];
+
+		if (pResource->GetInnerID() != innerID) {
+			LOG(ERROR) << "Inner ID doesn't match resource index!!!";
+		}
+	}
+
+	return(pResource);
+}
+
+int Renderer::CreateViewPort(D3D11_VIEWPORT viewport) {
+	_vViewPorts.emplace_back(viewport);
+	return _vViewPorts.size() - 1;
+}
+
+
+int Renderer::CreateInputLayout(std::vector<D3D11_INPUT_ELEMENT_DESC>& elements, int ShaderID) {
+
 }

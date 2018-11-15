@@ -3,7 +3,7 @@
 
 using namespace insight;
 
-VertexBuffer::VertexBuffer(std::shared_ptr<ID3D11Buffer> pBuffer) {
+VertexBuffer::VertexBuffer(ID3D11Buffer* pBuffer) {
 	_pBuffer = pBuffer;
 }
 
