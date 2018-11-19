@@ -4,6 +4,7 @@
 
 namespace insight {
 	class ShaderStage {
+	public:
 		ShaderStage();
 		virtual ~ShaderStage();
 

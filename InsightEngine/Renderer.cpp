@@ -21,6 +21,8 @@
 
 #include "ViewPort.h"
 
+#include "Texture2D.h"
+
 using namespace insight;
 
 Renderer::Renderer() {
@@ -212,6 +214,15 @@ int Renderer::CreateSwapChain(SwapChainConfig* pConfig) {
 	return(_vSwapChains.size() - 1);
 }
 
+std::shared_ptr<ResourceProxy> Renderer::GetSwapChainResource(int swapChainIndx) {
+	if(swapChainIndx < _vSwapChains.size())
+		return _vSwapChains[swapChainIndx]->GetResource();
+
+	LOG(ERROR) << "Tried to get an invalid swap buffer index texture ID!";
+
+	return std::shared_ptr<ResourceProxy>(new ResourceProxy());
+}
+
 int Renderer::StoreNewResource(Resource* pResource) {
 	int index = GetUnusedResourceIndex();
 
@@ -322,5 +333,41 @@ int Renderer::CreateViewPort(D3D11_VIEWPORT viewport) {
 
 
 int Renderer::CreateInputLayout(std::vector<D3D11_INPUT_ELEMENT_DESC>& elements, int ShaderID) {
+
+}
+
+std::shared_ptr<ResourceProxy> Renderer::CreateTexture2D(Texture2DConfig* pConfig, D3D11_SUBRESOURCE_DATA* pData,
+	ShaderResourceViewConfig* pSRVConfig,
+	RenderTargetViewConfig* pRTVConfig,
+	UnorderedAccessViewConfig* pUAVConfig,
+	DepthStencilViewConfig* pDSVConfig) {
+
+	ID3D11Texture2D* pTex = nullptr;
+	_pDevice->CreateTexture2D(&pConfig->GetDesc(), pData, &pTex);
+
+	if (pTex) {
+		Texture2D* pTexture2D = new Texture2D(pTex);
+		pTexture2D->SetDesiredDescription(pConfig->GetDesc());
+
+		int resourceID = StoreNewResource(pTexture2D);
+		std::shared_ptr<ResourceProxy> Proxy(new ResourceProxy(resourceID, pConfig, this, pSRVConfig, pRTVConfig));
+
+		return Proxy;
+	}
+
+	return std::shared_ptr<ResourceProxy>(new ResourceProxy());
+}
+
+PipelineManager* Renderer::GetImmPipeline() {
+	return _pImmPipeline;
+}
+
+int Renderer::LoadShader(ShaderType type, std::wstring& filename, std::wstring& function,
+	std::wstring& model, bool enablelogging = true) {
+	return LoadShader(type, filename, function, model, NULL, enablelogging);
+}
+
+int Renderer::LoadShader(ShaderType type, std::wstring& filename, std::wstring& function,
+	std::wstring& model, const D3D_SHADER_MACRO* pDefines, bool enablelogging = true) {
 
 }

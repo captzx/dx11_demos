@@ -3,6 +3,7 @@
 
 namespace insight {
 	class InputAssemblerStage {
+	public:
 		InputAssemblerStage();
 		virtual ~InputAssemblerStage();
 

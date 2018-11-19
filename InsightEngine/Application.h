@@ -26,7 +26,7 @@ namespace insight {
 		virtual void BeforeRegisterWindowClass(WNDCLASSEX &wc);
 
 	protected:
-		static Application* _pApplication;
+		static Application* _spApplication;
 
 		Scene* _pScene;
 		Timer* _pTimer;

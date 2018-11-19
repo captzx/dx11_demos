@@ -7,12 +7,12 @@ namespace insight {
 		VertexShaderStage();
 		virtual ~VertexShaderStage();
 
-	protected: 
-		virtual ShaderType GetType();
-		virtual void BindShaderProgram(ID3D11DeviceContext* pContext);
-		virtual void BindContextBuffers(ID3D11DeviceContext* pContext);
-		virtual void BindSamplerStates(ID3D11DeviceContext* pContext);
-		virtual void BindShaderResourceView(ID3D11DeviceContext* pContext);
-		virtual void BindUnordererAccessView(ID3D11DeviceContext* pContext);
+	public: 
+		virtual ShaderType GetType() override;
+		virtual void BindShaderProgram(ID3D11DeviceContext* pContext) override;
+		virtual void BindConstantBuffers(ID3D11DeviceContext* pContext) override;
+		virtual void BindSamplerStates(ID3D11DeviceContext1* pContext) override;
+		virtual void BindShaderResourceViews(ID3D11DeviceContext* pContext) override;
+		virtual void BindUnorderedAccessViews(ID3D11DeviceContext* pContext) override;
 	};
 }

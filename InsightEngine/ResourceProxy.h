@@ -3,6 +3,8 @@
 namespace insight {
 	class BufferConfig;
 	class Texture2DConfig;
+	class Texture1DConfig;
+	class Texture3DConfig;
 	class Renderer;
 	class ShaderResourceViewConfig;
 	class RenderTargetViewConfig;
@@ -22,5 +24,21 @@ namespace insight {
 			UnorderedAccessViewConfig* pUAVConfig = NULL,
 			DepthStencilViewConfig* pDSVConfig = NULL*/);
 		virtual ~ResourceProxy();
+
+	public:
+		int						_iResource;
+		int						_iResourceSRV;
+		int						_iResourceRTV;
+		int						_iResourceDSV;
+		int						_iResourceUAV;
+
+		BufferConfig*		        _pBufferConfig;
+		Texture1DConfig*	        _pTexture1dConfig;
+		Texture2DConfig*	        _pTexture2dConfig;
+		Texture3DConfig*	        _pTexture3dConfig;
+		DepthStencilViewConfig*     _pDSVConfig;
+		ShaderResourceViewConfig*   _pSRVConfig;
+		RenderTargetViewConfig*     _pRTVConfig;
+		UnorderedAccessViewConfig*  _pUAVConfig;
 	};
 }

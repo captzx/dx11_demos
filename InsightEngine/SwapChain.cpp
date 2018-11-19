@@ -13,6 +13,10 @@ SwapChain::~SwapChain() {
 
 }
 
+std::shared_ptr<ResourceProxy> SwapChain::GetResource() {
+	return _pResource;
+}
+
 IDXGISwapChain* SwapChain::Get() {
 	return _pSwapChain;
 }

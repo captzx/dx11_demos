@@ -36,39 +36,41 @@ namespace insight {
 		void BindUnordererAccessParmater(ShaderType type, RenderParmater* pParmater, UINT slot, IParmaterManager* pParmaterManager);
 		void BindShader(ShaderType type, int ID, IParmaterManager* pParmaterManager);
 
-		void ApplyInputResource();
 		void ClearInputResource();
+		void ApplyInputResource();
 
-		void ApplyPipelineResources();
 		void ClearPipelineResources();
+		void ApplyPipelineResources();
+
+		void ClearBuffer(const FXMVECTOR& color, float depth = 1.0f, UINT stencil = 0);
+		void ClearColorBuffer(const FXMVECTOR& color);
+		void ClearDepthStencilBuffer(float depth, UINT stencil);
 
 		void ClearRenderTargets();
-		void ClearRenderTargets();
+		void SetRenderTargets();
+		void ApplyRenderTargets();
 
 		void ClearPipelineState();
 		void ClearPipelineSTVs();
 
-	public:
+	private:
 		static const int NumQueries = 3;
 		ID3D11Query* _pQueries[NumQueries];
-	private:
 		ID3D11DeviceContext* _pContext;
 
-		VertexShaderStage _vertexShaderStage;
-		HullShaderStage _hullShaderStage;
-		DomainShaderStage _domainShaderStage;
-		GeometryShaderStage _geometryShaderStage;
-		PixelShaderStage _pixelShaderStage;
-		ComputeShaderStage _computeShaderStage;
+	public:
+		InputAssemblerStage InputAssemblerStage;
+		VertexShaderStage VertexShaderStage;
+		HullShaderStage HullShaderStage;
+		DomainShaderStage DomainShaderStage;
+		GeometryShaderStage GeometryShaderStage;
+		StreamOutpueStage StreamOutpueStage;
+		RasterizerStage RasterizerStage;
+		PixelShaderStage PixelShaderStage;
+		OutputMergerStage OutputMergerStage;
 
-		ShaderStage ShaderStates[6];
+		ComputeShaderStage ComputeShaderStage;
 
-		InputAssemblerStage _inputAssemblerStage;
-		StreamOutpueStage _streamOutputStage;
-		RasterizerStage _rasterizerStage;
-		OutputMergerStage _outputMergerStage;
-	
-	
-	
+		ShaderStage* ShaderStates[6];
 	};
 }

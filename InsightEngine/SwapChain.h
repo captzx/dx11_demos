@@ -7,6 +7,8 @@ namespace insight {
 		explicit SwapChain(IDXGISwapChain* pSwapChain, std::shared_ptr<ResourceProxy> pResource);
 		virtual ~SwapChain();
 
+		std::shared_ptr<ResourceProxy> GetResource();
+
 		IDXGISwapChain* Get();
 
 	protected:

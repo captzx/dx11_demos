@@ -22,8 +22,13 @@ namespace insight {
 	class ViewPort;
 
 	class PipelineManager;
+	class ShaderResourceViewConfig;
+	class RenderTargetViewConfig;
+	class UnorderedAccessViewConfig;
+	class DepthStencilViewConfig;
 
 	class Resource;
+	class ResourceProxy;
 	class Renderer {
 	public:
 		Renderer();
@@ -35,12 +40,19 @@ namespace insight {
 		void Shutdown();
 
 		int CreateSwapChain(SwapChainConfig* pConfig);
+		std::shared_ptr<ResourceProxy> GetSwapChainResource(int swapChianIdx);
 		void Present(HWND hWnd = 0, int SwapChain = -1, UINT SyncInterval = 0, UINT PresentFlags = 0);
 
 		std::shared_ptr<ResourceProxy> CreateVertexBuffer(BufferConfig* pConfig, D3D11_SUBRESOURCE_DATA* pData);
 		std::shared_ptr<ResourceProxy> CreateIndexBuffer(BufferConfig* pConfig, D3D11_SUBRESOURCE_DATA* pData);
 		std::shared_ptr<ResourceProxy> CreateConstantBuffer(BufferConfig* pConfig, D3D11_SUBRESOURCE_DATA* pData, bool bAutoUpdate = true);
 		// ...
+
+		std::shared_ptr<ResourceProxy> CreateTexture2D(Texture2DConfig* pConfig, D3D11_SUBRESOURCE_DATA* pData,
+			ShaderResourceViewConfig* pSRVConfig = nullptr,
+			RenderTargetViewConfig* pRTVConfig = nullptr,
+			UnorderedAccessViewConfig* pUAVConfig = nullptr,
+			DepthStencilViewConfig* pDSVConfig = nullptr);
 
 		int CreateRenderTargetView(int ResourceID, D3D11_RENDER_TARGET_VIEW_DESC* pDesc);
 		int CreateDepthStencilView(int ResourceID, D3D11_DEPTH_STENCIL_VIEW_DESC* pDesc);
@@ -53,6 +65,13 @@ namespace insight {
 		int StoreNewResource(Resource* pResource);
 		int GetUnusedResourceIndex();
 
+		int LoadShader(ShaderType type, std::wstring& filename, std::wstring& function,
+			std::wstring& model, bool enablelogging = true);
+
+		int LoadShader(ShaderType type, std::wstring& filename, std::wstring& function,
+			std::wstring& model, const D3D_SHADER_MACRO* pDefines, bool enablelogging = true);
+
+		PipelineManager* GetImmPipeline();
 	protected:
 		D3D_FEATURE_LEVEL _featureLevel;
 

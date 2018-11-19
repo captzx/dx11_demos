@@ -22,10 +22,15 @@
 #include <memory>
 #include <assert.h>
 
-#include <wrl.h>
 // DirectX includes
 #include <d3d11_1.h>
 #include <d3dCompiler.h>
+
+
+#include <DirectXMath.h>
+using namespace DirectX;
+#include <DirectXColors.h>
+using namespace DirectX::Colors;
 
 #define SAFE_RELEASE( x ) {if(x){(x)->Release();(x)=NULL;}}
 #define SAFE_DELETE( x ) {if(x){delete (x);(x)=NULL;}}

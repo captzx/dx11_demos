@@ -5,10 +5,10 @@
 
 using namespace insight;
 
-Application* Application::_pApplication = nullptr;
+Application* Application::_spApplication = nullptr;
 
 Application::Application() {
-	_pApplication = this;
+	_spApplication = this;
 
 	_pScene = new Scene();
 	_pTimer = new Timer();
@@ -21,7 +21,7 @@ Application::~Application() {
 }
 
 Application* Application::GetApplication() {
-	return _pApplication;
+	return _spApplication;
 }
 
 void Application::MessageLoop() {

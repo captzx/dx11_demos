@@ -1,5 +1,6 @@
 #pragma once
 #include "Application.h"
+#include "ResourceProxy.h"
 
 class RotatingCubeApp: public Application {
 public:
@@ -19,16 +20,18 @@ protected:
 	Renderer* _pRenderer;
 	Win32Window* _pWindow;
 
-	int _swapChain;
-	std::shared_ptr<Resource> _pRenderTarget;
-	std::shared_ptr<Resource> _pDepthTarget;
+	int _iSwapChain;
+	std::shared_ptr<ResourceProxy> _pRenderTarget;
+	std::shared_ptr<ResourceProxy> _pDepthTarget;
 
-	std::shared_ptr<Resource> _pVertexBuffer;
-	int _vertexLayout;
-	std::shared_ptr<Resource> _pIndexBuffer;
+	std::shared_ptr<ResourceProxy> _pVertexBuffer;
+	int _iVertexLayout;
+	std::shared_ptr<ResourceProxy> _pIndexBuffer;
 	RenderEffect* _pEffect;
 
-	Matrix4f _worldMatrix;
-	Matrix4f _viewMatrix;
-	Matrix4f _projMatrix;
+	XMFLOAT4X4 _mWorld;
+	XMFLOAT4X4 _mView;
+	XMFLOAT4X4 _mProj;
+
+	IParameterManager* _pParamMgr;
 };
