@@ -65,6 +65,10 @@ namespace insight {
 		int StoreNewResource(Resource* pResource);
 		int GetUnusedResourceIndex();
 
+		RenderTargetView& GetRenderTargetViewByIndex(int index);
+		DepthStencilView& GetDepthStencilViewByIndex(int index);
+
+
 		int LoadShader(ShaderType type, std::wstring& filename, std::wstring& function,
 			std::wstring& model, bool enablelogging = true);
 

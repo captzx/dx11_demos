@@ -10,19 +10,19 @@ namespace insight {
 		void InitializeState();
 		void ResetUploadFlag();
 
-		void SetIntentState(TStateMonitor<T*> pIntentState);
+		void SetDesiredState(TStateMonitor<T>* pState);
 
 		void SetState(T state);
 		const T& GetState() const;
 
-		bool IsSameWithIntent();
+		bool IsSameWithDesired();
 		bool IsNeedUpdate();
 
 	private:
 		bool _bNeedUpload;
 		T _initialState;
 		T _state;
-		TStateMonitor<T*> _pIntentState;
+		TStateMonitor<T*> _pDesiredState;
 	};
 
 	#include "TStateMonitorImpl.h"

@@ -371,3 +371,7 @@ int Renderer::LoadShader(ShaderType type, std::wstring& filename, std::wstring& 
 	std::wstring& model, const D3D_SHADER_MACRO* pDefines, bool enablelogging = true) {
 
 }
+
+RenderTargetView& Renderer::GetRenderTargetViewByIndex(int index) {
+	return _vRenderTargetViews[index];
+}

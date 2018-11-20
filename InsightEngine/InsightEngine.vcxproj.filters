@@ -241,6 +241,9 @@
     <ClInclude Include="ShaderReflection.h">
       <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader</Filter>
     </ClInclude>
+    <ClInclude Include="OutputMergerStageState.h">
+      <Filter>Rendering\Pipeline System\Stages\Fixed Stages\8.OutputMergeStage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -380,6 +383,9 @@
     </ClCompile>
     <ClCompile Include="ShaderReflection.cpp">
       <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="OurputMergerStageState.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Fixed Stages\8.OutputMergeStage</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

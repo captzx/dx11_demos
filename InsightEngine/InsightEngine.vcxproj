@@ -140,6 +140,7 @@
     <ClInclude Include="InputAssemblerStage.h" />
     <ClInclude Include="InputAssemblerState.h" />
     <ClInclude Include="OutputMergerStage.h" />
+    <ClInclude Include="OutputMergerStageState.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PipelineManager.h" />
     <ClInclude Include="PixelShaderStage.h" />
@@ -191,6 +192,7 @@
     <ClCompile Include="InputAssemblerStage.cpp" />
     <ClCompile Include="InputAssemblerState.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="OurputMergerStageState.cpp" />
     <ClCompile Include="OutputMergerStage.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

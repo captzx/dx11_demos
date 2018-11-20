@@ -5,7 +5,7 @@ TStateMonitor<T>::TStateMonitor(T initialState):
 	_bNeedUpload(false),
 	_initialState(initialState),
 	_state(initialState),
-	_pIntentState(nullptr){
+	_pDesiredState(nullptr){
 
 	InitializeState();
 	ResetUploadFlag();
@@ -27,20 +27,20 @@ void TStateMonitor<T>::ResetUploadFlag() {
 }
 
 template<typename T>
-void TStateMonitor<T>::SetIntentState(TStateMonitor<T*> pIntentState) {
-	_pIntentState = pIntentState;
+void TStateMonitor<T>::SetDesiredState(TStateMonitor<T>* pState) {
+	_pDesiredState = pState;
 }
 
 template<typename T>
 void TStateMonitor<T>::SetState(T state) {
 	_state = state;
 
-	if (!_pIntentState) {
+	if (!_pDesiredState) {
 		_bNeedUpload = true;
 		return;
 	}
 
-	_bNeedUpload = !IsSameWithIntent();
+	_bNeedUpload = !IsSameWithDesired();
 }
 
 template<typename T>
@@ -49,8 +49,8 @@ const T& TStateMonitor<T>::GetState() const {
 }
 
 template<typename T>
-bool TStateMonitor<T>::IsSameWithIntent() {
-	return _state == _pIntentState->_state;
+bool TStateMonitor<T>::IsSameWithDesired() {
+	return _state == _pDesiredState->_state;
 }
 
 template<typename T>

@@ -10,7 +10,7 @@ namespace insight {
 		void InitializeStates();
 		void ResetUploadFlags();
 
-		bool IsSameWithIntent();
+		bool IsSameWithDesired();
 		bool IsNeedUpload();
 
 		unsigned int GetStartSlot();
@@ -22,16 +22,19 @@ namespace insight {
 		T* GetSlotLocation(unsigned int slot);
 
 		void SetState(unsigned int slot, T state);
-		void SetIntentState(TStateArrayMonitor<T, N>* pIntentState);
+		void SetDesiredState(TStateArrayMonitor<T, N>* pDesiredState);
 
 	private:
-		unsigned int _startSlot;
-		unsigned int _endSlot;
+		void _SearchFromBelow();
+		void _SearchFromAbove();
+
+		unsigned int _uiStartSlot;
+		unsigned int _uiEndSlot;
 		bool _bNeedUpload;
 		T _initialState;
 		T _states[N];
 
-		TStateArrayMonitor<T, N>* _pIntentState;
+		TStateArrayMonitor<T, N>* _pDesiredState;
 	};
 
 	#include "TStateArrayMonitorImpl.h";
