@@ -19,20 +19,20 @@ void OutputMergerStageState::SetFeatureLevel(D3D_FEATURE_LEVEL level) {
 }
 
 void OutputMergerStageState::ClearState() {
-	RenderTargetViews.InitializeStates();
+	RenderTargetViews.InitializeState();
 	DepthStencilViews.InitializeState();
 }
 
-void OutputMergerStageState::SetRefState(OutputMergerStageState* pState) {
-	_pRefState = pState;
+void OutputMergerStageState::CacheRunningState(OutputMergerStageState* pState) {
+	_pCacheState = pState;
 
-	RenderTargetViews.SetDesiredState(&_pRefState->RenderTargetViews);
-	DepthStencilViews.SetDesiredState(&_pRefState->DepthStencilViews);
+	RenderTargetViews.CacheRunningState(&_pCacheState->RenderTargetViews);
+	DepthStencilViews.CacheRunningState(&_pCacheState->DepthStencilViews);
 }
 
-void OutputMergerStageState::ResetUpdateFlags() {
-	RenderTargetViews.ResetUploadFlags();
-	DepthStencilViews.ResetUploadFlag();
+void OutputMergerStageState::ResetTracing() {
+	RenderTargetViews.ResetTracing();
+	DepthStencilViews.ResetTracing();
 }
 
 

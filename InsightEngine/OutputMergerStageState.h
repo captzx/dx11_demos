@@ -8,11 +8,11 @@ namespace insight {
 		OutputMergerStageState();
 		virtual ~OutputMergerStageState();
 
-		void SetFeatureLevel(D3D_FEATURE_LEVEL level);
+		void SetFeatureLevel(D3D_FEATURE_LEVEL featureLevel);
 
 		void ClearState();
-		void SetRefState(OutputMergerStageState* pState);
-		void ResetUpdateFlags();
+		void CacheRunningState(OutputMergerStageState* pState);
+		void ResetTracing();
 
 		int GetRenderTargetCount() const;
 
@@ -22,8 +22,6 @@ namespace insight {
 	protected:
 		D3D_FEATURE_LEVEL _featureLevel;
 
-		OutputMergerStageState* _pRefState;
-
-		friend OutputMergerStage;
+		OutputMergerStageState* _pCacheState;
 	};
 }

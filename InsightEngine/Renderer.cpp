@@ -1,27 +1,30 @@
 #include "pch.h"
 #include "Renderer.h"
+#include "Shader.h"
+#include "ViewPort.h"
+
+#include "PipelineManager.h"
+#include "RenderTargetView.h"
+#include "DepthStencilView.h"
+#include "ShaderResourceView.h"
+#include "ShaderResourceViewConfig.h"
+#include "RenderTargetViewConfig.h"
+#include "DepthStencilViewConfig.h"
+
 
 #include "BufferConfig.h"
+#include "Buffer.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 #include "ConstantBuffer.h"
-
-#include "PipelineManager.h"
-
-#include "SwapChain.h"
+#include "Resource.h"
+#include "ResourceProxy.h"
 #include "Texture2D.h"
-
 #include "SwapChainConfig.h"
+#include "SwapChain.h"
 #include "Texture2DConfig.h"
 
-#include "ResourceProxy.h"
-
-#include "RenderTargetView.h"
-#include "DepthStencilView.h"
-
-#include "ViewPort.h"
-
-#include "Texture2D.h"
+#include "Shader.h"
 
 using namespace insight;
 
@@ -152,22 +155,21 @@ bool Renderer::Initialize(D3D_DRIVER_TYPE driverType, D3D_FEATURE_LEVEL featureL
 	_pImmPipeline = new PipelineManager();
 	_pImmPipeline->SetDeviceContext(pContext, _featureLevel);
 
-	D3D11_QUERY_DESC queryDesc;
-	queryDesc.Query = D3D11_QUERY_PIPELINE_STATISTICS;
-	queryDesc.MiscFlags = 0;
+	//D3D11_QUERY_DESC queryDesc;
+	//queryDesc.Query = D3D11_QUERY_PIPELINE_STATISTICS;
+	//queryDesc.MiscFlags = 0;
 
-	for (int i = 0; i < PipelineManager::NumQueries; ++i){
-		hr = _pDevice->CreateQuery(&queryDesc, &_pImmPipeline->_pQueries[i]);
-		if (FAILED(hr)){
-			LOG(ERROR) << "Unable to create a query object!";
-			Shutdown();
-			return(false);
-		}
-	}
+	//for (int i = 0; i < PipelineManager::NumQueries; ++i){
+	//	hr = _pDevice->CreateQuery(&queryDesc, &_pImmPipeline->_pQueries[i]);
+	//	if (FAILED(hr)){
+	//		LOG(ERROR) << "Unable to create a query object!";
+	//		Shutdown();
+	//		return(false);
+	//	}
+	//}
 
 	UINT uMassQuality;
 	hr = _pDevice->CheckMultisampleQualityLevels(DXGI_FORMAT_R8G8B8A8_UNORM, 4, &uMassQuality);
-	// assert(uMassQuality > 0);
 
 	return hr;
 }
@@ -358,9 +360,6 @@ std::shared_ptr<ResourceProxy> Renderer::CreateTexture2D(Texture2DConfig* pConfi
 	return std::shared_ptr<ResourceProxy>(new ResourceProxy());
 }
 
-PipelineManager* Renderer::GetImmPipeline() {
-	return _pImmPipeline;
-}
 
 int Renderer::LoadShader(ShaderType type, std::wstring& filename, std::wstring& function,
 	std::wstring& model, bool enablelogging = true) {
@@ -372,6 +371,218 @@ int Renderer::LoadShader(ShaderType type, std::wstring& filename, std::wstring& 
 
 }
 
+
+PipelineManager* Renderer::GetImmPipeline() {
+	return _pImmPipeline;
+}
+
+ResourceProxy* Renderer::LoadTexture(std::string filename, bool sRGB) {
+
+}
+ResourceProxy* Renderer::LoadTexture(void* pData, size_t bytes) {
+
+}
+ResourceProxy* Renderer::LoadTexture(ID3D11Texture2D* pTex) {
+
+}
+
+POINT Renderer::GetDesktopResolution() {
+	HRESULT hr;
+
+	IDXGIDevice* pDXGIDevice = nullptr;
+	_pDevice->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void **>(&pDXGIDevice));
+
+	IDXGIAdapter* pDXGIAdapter;
+	hr = pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), reinterpret_cast<void **>(&pDXGIAdapter));
+
+	IDXGIOutput* pDXGIOutput;
+	pDXGIAdapter->EnumOutputs(0, &pDXGIOutput);
+
+	DXGI_OUTPUT_DESC desc;
+	pDXGIOutput->GetDesc(&desc);
+
+	return(POINT{ static_cast<float>(desc.DesktopCoordinates.right - desc.DesktopCoordinates.left),
+		static_cast<float>(desc.DesktopCoordinates.bottom - desc.DesktopCoordinates.top) });
+}
+D3D_FEATURE_LEVEL Renderer::GetAvailableFearutrLevel(D3D_DRIVER_TYPE driverType){
+	//D3D_FEATURE_LEVEL FeatureLevel;
+	//HRESULT hr;
+
+	//if (_pDevice) {
+	//	FeatureLevel = _pDevice->GetFeatureLevel();
+	//}
+	//else {
+	//	hr = D3D11CreateDevice(
+	//		nullptr,
+	//		driverType,
+	//		nullptr,
+	//		0,
+	//		nullptr,
+	//		0,
+	//		D3D11_SDK_VERSION,
+	//		nullptr,
+	//		&FeatureLevel,
+	//		nullptr);
+
+	//	if (FAILED(hr)) {
+	//	}
+
+	//}
+
+	//return(FeatureLevel);
+}
+D3D_FEATURE_LEVEL Renderer::GetCurrentFearutrLevel() {
+	return _featureLevel;
+}
+UINT64 Renderer::GetAvailableVideoMemory() {
+	HRESULT hr;
+	IDXGIDevice* pDXGIDevice = nullptr;
+	_pDevice->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void **>(&pDXGIDevice));
+
+	IDXGIAdapter* pDXGIAdapter;
+	hr = pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), reinterpret_cast<void **>(&pDXGIAdapter));
+
+	DXGI_ADAPTER_DESC AdapterDesc;
+	pDXGIAdapter->GetDesc(&AdapterDesc);
+
+	UINT64 availableVideoMem = 0;
+
+	if (AdapterDesc.DedicatedVideoMemory)
+		availableVideoMem = AdapterDesc.DedicatedVideoMemory;
+	else
+		availableVideoMem = AdapterDesc.SharedSystemMemory;
+
+	return(availableVideoMem);
+}
+
+
+Resource* Renderer::GetRsourceByIndex(int index) {
+	Resource* pResource = 0;
+
+	unsigned int rid = index & 0xffff;
+	int innerID = (index & 0xffff0000) >> 16;
+
+	if (rid < _vResources.size()) {
+		pResource = _vResources[rid];
+
+		if (pResource->GetInnerID() != innerID) {
+			LOG(ERROR) << "Inner ID doesn't match resource index!!";
+		}
+	}
+
+	return(pResource);
+}
+
+Buffer* Renderer::GetGenericBufferByIndex(int index) {
+	Buffer* pResult = 0;
+
+	Resource* pResource = GetResourceByIndex(index);
+
+	if (pResource != NULL) {
+		if (pResource->GetType() == RT_TEXTURE1D || pResource->GetType() == RT_TEXTURE2D || pResource->GetType() == RT_TEXTURE3D) {
+			
+		}
+		else {
+			pResult = reinterpret_cast<Buffer*>(pResource);
+		}
+	}
+
+	return(pResult);
+}
+ConstantBuffer* Renderer::GetConstantBufferByIndex(int index) {
+	ConstantBuffer* pResult = 0;
+
+	Resource* pResource = GetResourceByIndex(index);
+
+	if (pResource != NULL) {
+		if (pResource->GetType() != RT_CONSTANTBUFFER) {
+		}
+		else {
+			pResult = reinterpret_cast<ConstantBuffer*>(pResource);
+		}
+	}
+
+	return(pResult);
+}
+VertexBuffer* Renderer::GetVertexBufferByIndex(int index) {
+	VertexBuffer* pResult = 0;
+
+	Resource* pResource = GetResourceByIndex(index);
+
+	if (pResource != NULL) {
+		if (pResource->GetType() != RT_VERTEXBUFFER) {
+		}
+		else {
+			pResult = reinterpret_cast<VertexBuffer*>(pResource);
+		}
+	}
+
+	return(pResult);
+}
+IndexBuffer* Renderer::GetIndexBufferByIndex(int index) {
+	IndexBuffer* pResult = 0;
+
+	Resource* pResource = GetResourceByIndex(index);
+
+	if (pResource != NULL) {
+		if (pResource->GetType() != RT_INDEXBUFFER) {
+
+		}
+		else {
+			pResult = reinterpret_cast<IndexBuffer*>(pResource);
+		}
+	}
+
+	return(pResult);
+}
+
+Texture2D* Renderer::GetTexture2DByIndex(int index) {
+	Texture2D* pResult = 0;
+
+	Resource* pResource = GetResourceByIndex(index);
+
+	if (pResource != NULL) {
+		if (pResource->GetType() != RT_TEXTURE2D) {
+			
+		}
+		else {
+			pResult = reinterpret_cast<Texture2D*>(pResource);
+		}
+	}
+
+	return(pResult);
+}
+SwapChain* Renderer::GetSwapChainByIndex(int index) {
+	return _vSwapChains[index];
+}
+
 RenderTargetView& Renderer::GetRenderTargetViewByIndex(int index) {
 	return _vRenderTargetViews[index];
+}
+DepthStencilView& Renderer::GetDepthStencilViewByIndex(int index) {
+	return _vDepthStencilViews[index];
+}
+
+ID3D11InputLayout* Renderer::GetInputLayoutByIndex(int index) {
+	return _vInputLayouts[index];
+}
+std::shared_ptr<ResourceProxy> Renderer::GetSwapChainResource(int index) {
+	return _vSwapChains[index]->GetResource();
+}
+
+ID3D11BlendState* Renderer::GetBlendState(int index) {
+
+}
+ID3D11DepthStencilState* Renderer::GetDepthStencilState(int index) {
+
+}
+ID3D11RasterizerState* Renderer::GetRasterizerState(int index) {
+
+}
+const ViewPort& Renderer::GetViewPort(int index) const {
+	return _vViewPorts[index];
+}
+
+Shader* Renderer::GetShader() {
+
 }

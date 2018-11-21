@@ -7,17 +7,17 @@
 using namespace insight;
 
 OutputMergerStage::OutputMergerStage() {
-	_desiredState.SetRefState(&_currentState);
+	_desiredState.CacheRunningState(&_currentState);
 }
 OutputMergerStage::~OutputMergerStage() {
 
 }
 
 
-void OutputMergerStage::SetFeatureLevel(D3D_FEATURE_LEVEL level) {
-	_featureLevel = level;
-	_currentState.SetFeatureLevel(level);
-	_desiredState.SetFeatureLevel(level);
+void OutputMergerStage::SetFeatureLevel(D3D_FEATURE_LEVEL featureLevel) {
+	_featureLevel = featureLevel;
+	_currentState.SetFeatureLevel(featureLevel);
+	_desiredState.SetFeatureLevel(featureLevel);
 }
 
 
@@ -33,7 +33,7 @@ void OutputMergerStage::ApplyDesiredRenderTargetStates(ID3D11DeviceContext* pCon
 	int iRTVCount = 0;
 	int iUAVCount = 0;
 	
-	if (_desiredState.RenderTargetViews.IsNeedUpload() || _desiredState.DepthStencilViews.IsNeedUpdate()) {
+	if (_desiredState.RenderTargetViews.IsNeedUpload() || _desiredState.DepthStencilViews.IsNeedUpload()) {
 		std::shared_ptr<Renderer> pRenderer = Renderer::Get();
 
 		ID3D11RenderTargetView*	RTVs[D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT];

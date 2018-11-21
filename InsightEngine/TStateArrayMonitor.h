@@ -7,10 +7,10 @@ namespace insight {
 		TStateArrayMonitor(T initialState);
 		~TStateArrayMonitor();
 
-		void InitializeStates();
-		void ResetUploadFlags();
+		void InitializeState();
+		void ResetTracing();
 
-		bool IsSameWithDesired();
+		bool IsSameWithCache();
 		bool IsNeedUpload();
 
 		unsigned int GetStartSlot();
@@ -22,7 +22,7 @@ namespace insight {
 		T* GetSlotLocation(unsigned int slot);
 
 		void SetState(unsigned int slot, T state);
-		void SetDesiredState(TStateArrayMonitor<T, N>* pDesiredState);
+		void CacheRunningState(TStateArrayMonitor<T, N>* pState);
 
 	private:
 		void _SearchFromBelow();
@@ -31,10 +31,10 @@ namespace insight {
 		unsigned int _uiStartSlot;
 		unsigned int _uiEndSlot;
 		bool _bNeedUpload;
-		T _initialState;
+		const static T _csInitialState;
 		T _states[N];
 
-		TStateArrayMonitor<T, N>* _pDesiredState;
+		TStateArrayMonitor<T, N>* _pCacheState;
 	};
 
 	#include "TStateArrayMonitorImpl.h";

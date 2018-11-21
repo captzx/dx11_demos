@@ -3,10 +3,10 @@ using namespace insight;
 template <typename T, unsigned int N>
 TStateArrayMonitor<T, N>::TStateArrayMonitor(T initialState):
 	_uiStartSlot(0),
-	_uiEsndSlot(0),
+	_uiEndSlot(0),
 	_bNeedUpload(false),
-	_initialState(initialState),
-	_pDesiredState(nullptr){
+	_csInitialState(initialState),
+	_pCacheState(nullptr){
 
 	InitializeStates();
 	ResetUploadFlags();
@@ -17,17 +17,17 @@ TStateArrayMonitor<T, N>::~TStateArrayMonitor() {
 }
 
 template <typename T, unsigned int N>
-void TStateArrayMonitor<T, N>::InitializeStates() {
+void TStateArrayMonitor<T, N>::InitializeState() {
 
 }
 
 template <typename T, unsigned int N>
-void TStateArrayMonitor<T, N>::ResetUploadFlags() {
+void TStateArrayMonitor<T, N>::ResetTracing() {
 
 }
 
 template <typename T, unsigned int N>
-bool TStateArrayMonitor<T, N>::IsSameWithDesired() {
+bool TStateArrayMonitor<T, N>::IsSameWithCache() {
 
 }
 
@@ -73,7 +73,7 @@ void TStateArrayMonitor<T, N>::SetState(unsigned int slot, T state) {
 
 	_state[slot] = state;
 
-	if (_pDesiredState == nullptr) {
+	if (_pCacheState == nullptr) {
 		_bNeedUpload = true;
 		_uiStartSlot = 0;
 		_uiEndSlot = N - 1;
@@ -81,9 +81,9 @@ void TStateArrayMonitor<T, N>::SetState(unsigned int slot, T state) {
 		return;
 	}
 
-	bool bSameWithDesired = IsSameWithDesired();
+	bool bSameWithCache = IsSameWithCache();
 
-	if (!_bNeedUpload && !bSameWithDesired) {
+	if (!_bNeedUpload && !bSameWithCache) {
 		_bNeedUpload = true;
 		_uiStartSlot = slot;
 		_uiEndSlot = slot;
@@ -91,19 +91,19 @@ void TStateArrayMonitor<T, N>::SetState(unsigned int slot, T state) {
 
 	if (_bNeedUpload) {
 		if (slot < _uiStartSlot) {
-			if (!bSameWithDesired) _uiStartSlot = slot;
+			if (!bSameWithCache) _uiStartSlot = slot;
 		}
 		else if (slot == _uiStartSlot) {
-			if (bSameWithDesired) _SearchFromBlow();
+			if (bSameWithCache) _SearchFromBlow();
 		}
 		else if (_uiStartSlot < slot && slot < _uiEndSlot) {
 
 		}
 		else if (slot == _uiEndSlot) {
-			if (bSameWithDesired) _SearchFromAbove();
+			if (bSameWithCache) _SearchFromAbove();
 		}
 		else if (_uiEndSlot < slot) {
-			if (!bSameWithDesired) {
+			if (!bSameWithCache) {
 				_uiEndSlot = slot;
 			}
 		}
@@ -111,8 +111,8 @@ void TStateArrayMonitor<T, N>::SetState(unsigned int slot, T state) {
 }
 
 template <typename T, unsigned int N>
-void TStateArrayMonitor<T, N>::SetDesiredState(TStateArrayMonitor<T, N>* pState) {
-	_pDesiredState = pState;
+void TStateArrayMonitor<T, N>::CacheRunningState(TStateArrayMonitor<T, N>* pState) {
+	_pCacheState = pState;
 }
 
 template <typename T, unsigned int N>

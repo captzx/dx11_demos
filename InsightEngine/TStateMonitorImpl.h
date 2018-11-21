@@ -3,9 +3,9 @@ using namespace insight;
 template <typename T>
 TStateMonitor<T>::TStateMonitor(T initialState):
 	_bNeedUpload(false),
-	_initialState(initialState),
+	_csInitialState(initialState),
 	_state(initialState),
-	_pDesiredState(nullptr){
+	_pCacheState(nullptr){
 
 	InitializeState();
 	ResetUploadFlag();
@@ -22,20 +22,20 @@ void TStateMonitor<T>::InitializeState() {
 }
 
 template<typename T>
-void TStateMonitor<T>::ResetUploadFlag() {
+void TStateMonitor<T>::ResetTracing() {
 	_bNeedUpload = false;
 }
 
 template<typename T>
-void TStateMonitor<T>::SetDesiredState(TStateMonitor<T>* pState) {
-	_pDesiredState = pState;
+void TStateMonitor<T>::CacheRunningState(TStateMonitor<T>* pRunningState) {
+	_pCacheState = pRunningState;
 }
 
 template<typename T>
 void TStateMonitor<T>::SetState(T state) {
 	_state = state;
 
-	if (!_pDesiredState) {
+	if (!_pCacheState) {
 		_bNeedUpload = true;
 		return;
 	}
@@ -49,11 +49,11 @@ const T& TStateMonitor<T>::GetState() const {
 }
 
 template<typename T>
-bool TStateMonitor<T>::IsSameWithDesired() {
-	return _state == _pDesiredState->_state;
+bool TStateMonitor<T>::IsSameWithCache() {
+	return _state == _pCacheState->_state;
 }
 
 template<typename T>
-bool TStateMonitor<T>::IsNeedUpdate() {
+bool TStateMonitor<T>::IsNeedUpload() {
 	return _bNeedUpload;
 }
