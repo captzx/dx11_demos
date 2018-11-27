@@ -12,5 +12,5 @@ Asset::~Asset() {
 }
 
 bool Asset::Load() {
-
+	return true;
 }

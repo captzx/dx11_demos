@@ -40,7 +40,3 @@ using namespace DirectX::Colors;
 #define NUM_THREADS 4
 
 #define PI 3.14159265f
-
-
-#include <glog/logging.h>
-using namespace google;

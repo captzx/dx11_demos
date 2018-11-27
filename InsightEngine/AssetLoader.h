@@ -4,9 +4,9 @@ class Asset;
 namespace insight {
 	class AssetLoader {
 	public:
-		AssetLoader();
-		virtual ~AssetLoader();
+		AssetLoader() {}
+		virtual ~AssetLoader() {}
 
-		void Load(Asset* asset);
+		void Load(Asset* asset) {}
 	};
 }

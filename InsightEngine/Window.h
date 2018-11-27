@@ -1,16 +1,15 @@
 #pragma once
-#include "IWindowProc.h"
 
 namespace insight {
+	class IWindowProc;
 	class Window{
 	public:
 		Window();
 		virtual ~Window();
 	public:
-		virtual void Initialize(IWindowProc* windowProc) = 0;
-		virtual void Shutdown() = 0;
-		virtual void Paint() = 0;
-	public:
+		virtual void Initialize(IWindowProc* windowProc);
+		virtual void Shutdown();
+
 		HWND GetHandle();
 
 		int GetLeft();
@@ -26,7 +25,7 @@ namespace insight {
 		void SetHeight(int height);
 
 		std::wstring GetCaption();
-		void SetCaption(const std::wstring& caption);
+		void SetCaption(std::wstring caption);
 
 		void SetSize(int width, int height);
 		void SetPosition(int left, int top);
@@ -34,20 +33,19 @@ namespace insight {
 		int GetSwapChain();
 		void SetSwapChain(int swapchain);
 
+		POINT GetCursorPosition();
 		void ResizeWindow(int width, int height);
 
 	protected:
-		HWND			_hWnd;
-		std::wstring	_caption;
-		int				_width;
-		int				_height;
-		int				_left;
-		int				_top;
+		HWND _hwnd;
+		DWORD _dwStyle;
+		std::wstring _wsCaption;
+		int	_iWidth;
+		int	_iHeight;
+		int	_iLeft;
+		int	_iTop;
 
-		int				_swapChain;
-
-		DWORD			_style;
-
+		int	_iSwapChain;
 
 		void _UpdateWindowState();
 	};

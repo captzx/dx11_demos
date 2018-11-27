@@ -1,9 +1,9 @@
 #pragma once
 
 namespace insight {
-	class Scene {
+	class Logger {
 	public:
-		Scene() {}
-		~Scene() {}
+		Logger() {}
+		~Logger() {}
 	};
 }
