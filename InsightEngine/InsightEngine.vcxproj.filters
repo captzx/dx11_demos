@@ -89,6 +89,15 @@
     <Filter Include="Rendering\Pipeline System\Stages\Programmable Stages\ShaderStageState">
       <UniqueIdentifier>{30c5a95c-b098-462f-87db-314122928d8f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{f64ba55e-876f-4327-8537-49d5f2d39fe1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{c99d66fd-fbca-464c-af00-27fc54df1a9a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AssetManager">
+      <UniqueIdentifier>{a62ddab0-ecac-44b6-991e-499e3c0aa906}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -96,60 +105,6 @@
     </ClInclude>
     <ClInclude Include="Window.h">
       <Filter>Application</Filter>
-    </ClInclude>
-    <ClInclude Include="Application.h">
-      <Filter>Application</Filter>
-    </ClInclude>
-    <ClInclude Include="Renderer.h">
-      <Filter>Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>Rendering\Resource System</Filter>
-    </ClInclude>
-    <ClInclude Include="Buffer.h">
-      <Filter>Rendering\Resource System\Buffers</Filter>
-    </ClInclude>
-    <ClInclude Include="BufferConfig.h">
-      <Filter>Rendering\Resource System\Buffers</Filter>
-    </ClInclude>
-    <ClInclude Include="IndexBuffer.h">
-      <Filter>Rendering\Resource System\Buffers</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexBuffer.h">
-      <Filter>Rendering\Resource System\Buffers</Filter>
-    </ClInclude>
-    <ClInclude Include="ConstantBuffer.h">
-      <Filter>Rendering\Resource System\Buffers</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderTargetView.h">
-      <Filter>Rendering\Resource System\Resource Views</Filter>
-    </ClInclude>
-    <ClInclude Include="RenderTargetViewConfig.h">
-      <Filter>Rendering\Resource System\Resource Views</Filter>
-    </ClInclude>
-    <ClInclude Include="BlendStateConfig.h">
-      <Filter>Rendering\Resource System\State</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderResourceView.h">
-      <Filter>Rendering\Resource System\Resource Views</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderResourceViewConfig.h">
-      <Filter>Rendering\Resource System\Resource Views</Filter>
-    </ClInclude>
-    <ClInclude Include="TStateMonitor.h">
-      <Filter>Rendering\Pipeline System\Stages\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="TStateMonitorImpl.h">
-      <Filter>Rendering\Pipeline System\Stages\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="TStateArrayMonitor.h">
-      <Filter>Rendering\Pipeline System\Stages\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="TStateArrayMonitorImpl.h">
-      <Filter>Rendering\Pipeline System\Stages\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderStageState.h">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\ShaderStageState</Filter>
     </ClInclude>
     <ClInclude Include="IWindowProc.h">
       <Filter>Application</Filter>
@@ -163,86 +118,14 @@
     <ClInclude Include="Win32Window.h">
       <Filter>Application</Filter>
     </ClInclude>
-    <ClInclude Include="Texture2D.h">
-      <Filter>Rendering\Resource System\Textures</Filter>
+    <ClInclude Include="AssetManager.h">
+      <Filter>AssetManager</Filter>
     </ClInclude>
-    <ClInclude Include="Texture2DConfig.h">
-      <Filter>Rendering\Resource System\Textures</Filter>
+    <ClInclude Include="AssetLoader.h">
+      <Filter>AssetManager</Filter>
     </ClInclude>
-    <ClInclude Include="SwapChain.h">
-      <Filter>Rendering\Resource System\Textures</Filter>
-    </ClInclude>
-    <ClInclude Include="SwapChainConfig.h">
-      <Filter>Rendering\Resource System\Textures</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourceProxy.h">
-      <Filter>Rendering\Resource System</Filter>
-    </ClInclude>
-    <ClInclude Include="DepthStencilView.h">
-      <Filter>Rendering\Resource System\Resource Views</Filter>
-    </ClInclude>
-    <ClInclude Include="DepthStencilViewConfig.h">
-      <Filter>Rendering\Resource System\Resource Views</Filter>
-    </ClInclude>
-    <ClInclude Include="ViewPort.h">
-      <Filter>Rendering\Pipeline System\Stages\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="InputAssemblerStage.h">
-      <Filter>Rendering\Pipeline System\Stages\Fixed Stages\1.ImputAssemblerStage</Filter>
-    </ClInclude>
-    <ClInclude Include="OutputMergerStage.h">
-      <Filter>Rendering\Pipeline System\Stages\Fixed Stages\8.OutputMergeStage</Filter>
-    </ClInclude>
-    <ClInclude Include="RasterizerStage.h">
-      <Filter>Rendering\Pipeline System\Stages\Fixed Stages\6.RasterizerStage</Filter>
-    </ClInclude>
-    <ClInclude Include="StreamOutputStage.h">
-      <Filter>Rendering\Pipeline System\Stages\Fixed Stages\5.StreamOutputStage</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexShaderStage.h">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\2.VertexShaderStage</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexShader.h">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\2.VertexShaderStage</Filter>
-    </ClInclude>
-    <ClInclude Include="InputAssemblerState.h">
-      <Filter>Rendering\Pipeline System\Stages\Fixed Stages\1.ImputAssemblerStage</Filter>
-    </ClInclude>
-    <ClInclude Include="HullShader.h">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\3.HullShaderStage</Filter>
-    </ClInclude>
-    <ClInclude Include="HullShaderStage.h">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\3.HullShaderStage</Filter>
-    </ClInclude>
-    <ClInclude Include="DomainShaderStage.h">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\4.DomainShaderStage</Filter>
-    </ClInclude>
-    <ClInclude Include="GeometryShaderStage.h">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\5.GeometryShaderStage</Filter>
-    </ClInclude>
-    <ClInclude Include="GeometryShader.h">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\5.GeometryShaderStage</Filter>
-    </ClInclude>
-    <ClInclude Include="ComputeShaderStage.h">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\E.ComputeShaderStage</Filter>
-    </ClInclude>
-    <ClInclude Include="PixelShaderStage.h">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\7.PixelShaderStage</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderStage.h">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="PipelineManager.h">
-      <Filter>Rendering\Pipeline System</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderReflection.h">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="OutputMergerStageState.h">
-      <Filter>Rendering\Pipeline System\Stages\Fixed Stages\8.OutputMergeStage</Filter>
+    <ClInclude Include="Asset.h">
+      <Filter>AssetManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -251,48 +134,6 @@
     </ClCompile>
     <ClCompile Include="Window.cpp">
       <Filter>Application</Filter>
-    </ClCompile>
-    <ClCompile Include="Application.cpp">
-      <Filter>Application</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer.cpp">
-      <Filter>Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="Resource.cpp">
-      <Filter>Rendering\Resource System</Filter>
-    </ClCompile>
-    <ClCompile Include="Buffer.cpp">
-      <Filter>Rendering\Resource System\Buffers</Filter>
-    </ClCompile>
-    <ClCompile Include="BufferConfig.cpp">
-      <Filter>Rendering\Resource System\Buffers</Filter>
-    </ClCompile>
-    <ClCompile Include="IndexBuffer.cpp">
-      <Filter>Rendering\Resource System\Buffers</Filter>
-    </ClCompile>
-    <ClCompile Include="VertexBuffer.cpp">
-      <Filter>Rendering\Resource System\Buffers</Filter>
-    </ClCompile>
-    <ClCompile Include="ConstantBuffer.cpp">
-      <Filter>Rendering\Resource System\Buffers</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderTargetView.cpp">
-      <Filter>Rendering\Resource System\Resource Views</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderTargetViewConfig.cpp">
-      <Filter>Rendering\Resource System\Resource Views</Filter>
-    </ClCompile>
-    <ClCompile Include="BlendStateConfig.cpp">
-      <Filter>Rendering\Resource System\State</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderResourceView.cpp">
-      <Filter>Rendering\Resource System\Resource Views</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderResourceViewConfig.cpp">
-      <Filter>Rendering\Resource System\Resource Views</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderStageState.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\ShaderStageState</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Application</Filter>
@@ -306,86 +147,14 @@
     <ClCompile Include="Win32Window.cpp">
       <Filter>Application</Filter>
     </ClCompile>
-    <ClCompile Include="Texture2D.cpp">
-      <Filter>Rendering\Resource System\Textures</Filter>
+    <ClCompile Include="AssetManager.cpp">
+      <Filter>AssetManager</Filter>
     </ClCompile>
-    <ClCompile Include="Texture2DConfig.cpp">
-      <Filter>Rendering\Resource System\Textures</Filter>
+    <ClCompile Include="AssetLoader.cpp">
+      <Filter>AssetManager</Filter>
     </ClCompile>
-    <ClCompile Include="SwapChain.cpp">
-      <Filter>Rendering\Resource System\Textures</Filter>
-    </ClCompile>
-    <ClCompile Include="SwapChainConfig.cpp">
-      <Filter>Rendering\Resource System\Textures</Filter>
-    </ClCompile>
-    <ClCompile Include="ResourceProxy.cpp">
-      <Filter>Rendering\Resource System</Filter>
-    </ClCompile>
-    <ClCompile Include="DepthStencilView.cpp">
-      <Filter>Rendering\Resource System\Resource Views</Filter>
-    </ClCompile>
-    <ClCompile Include="DepthStencilViewConfig.cpp">
-      <Filter>Rendering\Resource System\Resource Views</Filter>
-    </ClCompile>
-    <ClCompile Include="ViewPort.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Common</Filter>
-    </ClCompile>
-    <ClCompile Include="InputAssemblerStage.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Fixed Stages\1.ImputAssemblerStage</Filter>
-    </ClCompile>
-    <ClCompile Include="OutputMergerStage.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Fixed Stages\8.OutputMergeStage</Filter>
-    </ClCompile>
-    <ClCompile Include="RasterizerStage.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Fixed Stages\6.RasterizerStage</Filter>
-    </ClCompile>
-    <ClCompile Include="StreamOutputStage.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Fixed Stages\5.StreamOutputStage</Filter>
-    </ClCompile>
-    <ClCompile Include="VertesShaderStage.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\2.VertexShaderStage</Filter>
-    </ClCompile>
-    <ClCompile Include="InputAssemblerState.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Fixed Stages\1.ImputAssemblerStage</Filter>
-    </ClCompile>
-    <ClCompile Include="VertexShader.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\2.VertexShaderStage</Filter>
-    </ClCompile>
-    <ClCompile Include="HullShader.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\3.HullShaderStage</Filter>
-    </ClCompile>
-    <ClCompile Include="HullShaderStage.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\3.HullShaderStage</Filter>
-    </ClCompile>
-    <ClCompile Include="DomainShaderStage.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\4.DomainShaderStage</Filter>
-    </ClCompile>
-    <ClCompile Include="GeometryShaderStage.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\5.GeometryShaderStage</Filter>
-    </ClCompile>
-    <ClCompile Include="GeometryShader.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\5.GeometryShaderStage</Filter>
-    </ClCompile>
-    <ClCompile Include="ComputeShaderStage.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\E.ComputeShaderStage</Filter>
-    </ClCompile>
-    <ClCompile Include="PixelShaderStage.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\7.PixelShaderStage</Filter>
-    </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderStage.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="PipelineManager.cpp">
-      <Filter>Rendering\Pipeline System</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderReflection.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="OurputMergerStageState.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Fixed Stages\8.OutputMergeStage</Filter>
+    <ClCompile Include="Asset.cpp">
+      <Filter>AssetManager</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
