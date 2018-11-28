@@ -1,12 +1,12 @@
 #pragma once
 
-class Asset;
 namespace insight {
+	class Asset;
 	class AssetLoader {
 	public:
-		AssetLoader() {}
-		virtual ~AssetLoader() {}
+		AssetLoader();
+		virtual ~AssetLoader();
 
-		void Load(Asset* asset) {}
+		void Load(Asset* asset);
 	};
 }

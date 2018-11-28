@@ -1,22 +1,17 @@
 #pragma once
 #include "Application.h"
 
-class RotatingCubeApp: public Application {
-public:
-	RotatingCubeApp();
+namespace insight {
+	class RotatingCubeApp : public Application {
+	public:
+	public:
+		virtual bool ConfigureEngineComponent() override;
+		virtual void ShutdownEngineComponent() override;
 
-public:
-	virtual bool ConfigureEngineComponent();
-	virtual void ShutdownEngineComponent();
+		virtual void Initialize() override;
+		virtual void Update() override;
+		virtual void Shutdown() override;
 
-	virtual void Initialize();
-	virtual void Update();
-	virtual void Shutdown();
-
-	virtual std::wstring GetName();
-
-protected:
-	Win32Window* _pWindow;
-
-	int _iSwapChain;
-};
+		virtual std::wstring GetName() override;
+	};
+}

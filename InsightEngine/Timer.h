@@ -3,7 +3,7 @@
 namespace insight {
 	class Timer {
 	public:
-		Timer() {}
-		~Timer() {}
+		Timer();
+		~Timer();
 	};
 }

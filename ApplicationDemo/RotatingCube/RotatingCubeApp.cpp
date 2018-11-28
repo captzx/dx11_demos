@@ -1,17 +1,15 @@
 #include "pch.h"
 #include "RotatingCubeApp.h"
 #include "Application.h"
-#include "Win32Window.h"
+#include "Window.h"
+#include "renderer.h"
 
 using namespace insight;
 
-RotatingCubeApp _RotatingCubeInstance;
-
-RotatingCubeApp::RotatingCubeApp() {
-}
+RotatingCubeApp RotatingCubeInstance;
 
 bool RotatingCubeApp::ConfigureEngineComponent() {
-	
+	return true;
 }
 
 void RotatingCubeApp::ShutdownEngineComponent() {
@@ -19,11 +17,11 @@ void RotatingCubeApp::ShutdownEngineComponent() {
 }
 
 void RotatingCubeApp::Initialize() {
-	
+	_pWindow->SetCaption(GetName());
 }
 
 void RotatingCubeApp::Update() {
-	
+	Application::Update();
 }
 
 void RotatingCubeApp::Shutdown() {

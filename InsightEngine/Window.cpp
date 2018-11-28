@@ -16,17 +16,10 @@ LRESULT CALLBACK InternalWindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 }
 
 Window::Window(){
-	_hwnd = 0;
-	_dwStyle = (WS_OVERLAPPEDWINDOW | WS_VISIBLE);
-	_wsCaption = L"App";
-	_iWidth = 800;
-	_iHeight = 600;
 	int screenWidth = GetSystemMetrics(SM_CXSCREEN);
 	int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 	_iLeft = (screenWidth - _iWidth) / 2;
 	_iTop = (screenHeight - _iHeight) / 2;
-
-	_iSwapChain = -1;
 }
 
 Window::~Window(){
@@ -99,7 +92,7 @@ void Window::Shutdown() {
 	_hwnd = 0;
 }
 
-POINT Window::GetCursorPosition() {
+POINT Window::GetCursorPosition() const {
 	POINT p;
 	GetCursorPos(&p);
 	ScreenToClient(_hwnd, &p);
@@ -107,7 +100,7 @@ POINT Window::GetCursorPosition() {
 	return p;
 }
 
-HWND Window::GetHandle(){
+HWND& Window::GetHandle(){
 	return _hwnd;
 }
 
@@ -120,20 +113,20 @@ void Window::SetHeight(int height){
 	_UpdateWindowState();
 }
 
-int Window::GetWidth(){
+int Window::GetWidth() const {
 	RECT rect;
 	GetClientRect(_hwnd, &rect);
 	return rect.right - rect.left;
 }
 
-int Window::GetHeight(){
+int Window::GetHeight() const {
 	RECT rect;
 	GetClientRect(_hwnd, &rect);
 
 	return rect.bottom - rect.top;
 }
 
-int Window::GetLeft(){
+int Window::GetLeft() const {
 	POINT point;
 	point.x = 0;
 	point.y = 0;
@@ -143,7 +136,7 @@ int Window::GetLeft(){
 	return point.x;
 }
 
-int Window::GetTop(){
+int Window::GetTop() const {
 	POINT point;
 	point.x = 0;
 	point.y = 0;
@@ -167,7 +160,7 @@ void Window::SetPosition(int left, int top){
 	_UpdateWindowState();
 }
 
-void Window::SetCaption(std::wstring caption){
+void Window::SetCaption(const std::wstring& caption) {
 	_wsCaption = caption;
 
 	if (_hwnd != 0)
@@ -179,11 +172,11 @@ void Window::ResizeWindow(int width, int height){
 	_iHeight = height;
 }
 
-std::wstring Window::GetCaption(){
+std::wstring Window::GetCaption() const {
 	return _wsCaption;
 }
 
-int Window::GetSwapChain(){
+int Window::GetSwapChain() const {
 	return _iSwapChain;
 }
 
@@ -216,7 +209,7 @@ void Window::SetStyle(DWORD style){
 	SetWindowLongPtr(_hwnd, GWL_EXSTYLE, _dwStyle);
 }
 
-DWORD Window::GetStyle(){
+DWORD Window::GetStyle() const {
 	return _dwStyle;
 }
 

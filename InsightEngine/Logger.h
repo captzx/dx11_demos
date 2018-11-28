@@ -3,7 +3,7 @@
 namespace insight {
 	class Logger {
 	public:
-		Logger() {}
-		~Logger() {}
+		Logger();
+		~Logger();
 	};
 }

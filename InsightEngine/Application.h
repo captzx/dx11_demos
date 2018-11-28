@@ -14,7 +14,7 @@ namespace insight {
 		virtual bool ConfigureEngineComponent() = 0;
 		virtual void ShutdownEngineComponent() = 0;
 		virtual void Initialize() = 0;
-		virtual void Update() = 0;
+		virtual void Update();
 		virtual void Shutdown() = 0;
 
 		virtual std::wstring GetName() = 0;
@@ -24,10 +24,11 @@ namespace insight {
 
 		LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) override;
 
+		HWND& GetHandle();
 	protected:
 		static Application* spApplication;
 
-		Renderer* _pRenderer;
-		Window* _pWindow;
+		Renderer* _pRenderer = nullptr;
+		Window* _pWindow = nullptr;
 	};
 }

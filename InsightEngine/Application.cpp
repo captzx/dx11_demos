@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Application.h"
 #include "Window.h"
+#include "Renderer.h"
 
 using namespace insight;
 
@@ -8,6 +9,18 @@ Application* Application::spApplication = nullptr;
 
 Application::Application() {
 	spApplication = this;
+
+	_pWindow = new Window();
+	_pWindow->Initialize(this);
+
+	_pRenderer = new Renderer();
+	_pRenderer->Initialize(D3D_DRIVER_TYPE_HARDWARE, D3D_FEATURE_LEVEL_11_0);
+
+	_pRenderer->CreateSwapChain(GetHandle());
+	_pRenderer->CreateRenderTargetView();
+	_pRenderer->CreateDepthStencilView();
+	_pRenderer->Extra();
+
 }
 
 Application::~Application() {
@@ -57,4 +70,13 @@ LRESULT Application::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lpara
 			break;
 	}
 	return DefWindowProc(hwnd, msg, wparam, lparam);
+}
+
+
+HWND& Application::GetHandle() {
+	return _pWindow->GetHandle();
+}
+
+void Application::Update() {
+	_pRenderer->Present();
 }

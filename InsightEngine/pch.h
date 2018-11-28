@@ -22,10 +22,16 @@
 #include <memory>
 #include <assert.h>
 
+#define INITGUID
+#define DIRECTINPUT_VERSION 0x0800
 // DirectX includes
-#include <d3d11_1.h>
+#include <d3d11.h>
+#include <dinput.h>
 #include <d3dCompiler.h>
-
+#pragma comment(lib,"d3d11.lib")
+#pragma comment(lib,"d3dcompiler.lib")
+#pragma comment(lib,"dxgi.lib")
+#pragma comment(lib,"dinput8.lib")
 
 #include <DirectXMath.h>
 using namespace DirectX;

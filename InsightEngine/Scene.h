@@ -3,7 +3,7 @@
 namespace insight {
 	class Scene {
 	public:
-		Scene() {}
-		~Scene() {}
+		Scene();
+		~Scene();
 	};
 }

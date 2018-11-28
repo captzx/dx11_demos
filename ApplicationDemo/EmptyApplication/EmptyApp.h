@@ -5,9 +5,6 @@
 namespace insight {
 	class EmptyApp: public Application {
 	public:
-		EmptyApp();
-		~EmptyApp();
-
 		bool ConfigureEngineComponent() override;
 		void ShutdownEngineComponent() override;
 		void Initialize() override;

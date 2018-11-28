@@ -4,6 +4,10 @@
 using namespace insight;
 
 int WINAPI WinMain(HINSTANCE h_Inst, HINSTANCE h_PrevInst, LPSTR lpcmdline, int ncmdshow){
+	int tmpDbgFlag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
+	tmpDbgFlag |= _CRTDBG_LEAK_CHECK_DF;
+	_CrtSetDbgFlag(tmpDbgFlag);
+
 	Application *pApp = Application::Get();
 
 	if (!pApp) {
