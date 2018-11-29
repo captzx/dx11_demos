@@ -4,28 +4,12 @@
 
 using namespace insight;
 
-EmptyApp AppInstance;
-
-bool EmptyApp::ConfigureEngineComponent() {
-	return true;
-}
-
-void EmptyApp::ShutdownEngineComponent() {
-
-}
+Application* AppInstance = new EmptyApp();
 
 void EmptyApp::Initialize() {
+	Application::Initialize();
 	_pWindow->SetCaption(GetName());
 }
-
-void EmptyApp::Update() {
-
-}
-
-void EmptyApp::Shutdown() {
-
-}
-
 
 std::wstring EmptyApp::GetName() {
 	return std::wstring(L"EmptyApp Demo");

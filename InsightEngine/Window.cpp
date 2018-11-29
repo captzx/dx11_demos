@@ -49,30 +49,18 @@ void Window::Initialize(IWindowProc* MsgProc) {
 
 	RegisterClassEx(&wc);
 
-	RECT rc;
-	rc.top = rc.left = 0;
-	rc.right = _iWidth;
-	rc.bottom = _iHeight;
-
-	AdjustWindowRectEx(&rc, _dwStyle, false, 0);
-
-	long adjust_iWidth = rc.right - rc.left;
-	long adjust_iHeight = rc.bottom - rc.top;
-
-	_hwnd = CreateWindowEx(
-		NULL,
-		wc.lpszClassName,
-		_wsCaption.c_str(),
-		_dwStyle,
-		_iLeft,
-		_iTop,
-		adjust_iWidth, adjust_iHeight,
-		NULL,
-		NULL,
-		NULL,
-		NULL);
-
 	RECT rect;
+	rect.top = rect.left = 0;
+	rect.right = _iWidth;
+	rect.bottom = _iHeight;
+
+	AdjustWindowRectEx(&rect, _dwStyle, false, 0);
+	long adjust_iWidth = rect.right - rect.left;
+	long adjust_iHeight = rect.bottom - rect.top;
+
+	_hwnd = CreateWindowEx(NULL, wc.lpszClassName, _wsCaption.c_str(), _dwStyle, 
+		_iLeft, _iTop, adjust_iWidth, adjust_iHeight, NULL, NULL, NULL, NULL);
+
 	GetClientRect(_hwnd, &rect);
 	_iWidth = rect.right - rect.left;
 	_iHeight = rect.bottom - rect.top;
@@ -100,7 +88,7 @@ POINT Window::GetCursorPosition() const {
 	return p;
 }
 
-HWND& Window::GetHandle(){
+HWND Window::GetHandle() const{
 	return _hwnd;
 }
 
@@ -115,12 +103,17 @@ void Window::SetHeight(int height){
 
 int Window::GetWidth() const {
 	RECT rect;
+	memset(&rect, 0, sizeof(rect));
+
 	GetClientRect(_hwnd, &rect);
+
 	return rect.right - rect.left;
 }
 
 int Window::GetHeight() const {
 	RECT rect;
+	memset(&rect, 0, sizeof(rect));
+
 	GetClientRect(_hwnd, &rect);
 
 	return rect.bottom - rect.top;
@@ -128,8 +121,7 @@ int Window::GetHeight() const {
 
 int Window::GetLeft() const {
 	POINT point;
-	point.x = 0;
-	point.y = 0;
+	memset(&point, 0, sizeof(point));
 
 	ClientToScreen(_hwnd, &point);
 
@@ -138,8 +130,7 @@ int Window::GetLeft() const {
 
 int Window::GetTop() const {
 	POINT point;
-	point.x = 0;
-	point.y = 0;
+	memset(&point, 0, sizeof(point));
 
 	ClientToScreen(_hwnd, &point);
 
@@ -163,13 +154,16 @@ void Window::SetPosition(int left, int top){
 void Window::SetCaption(const std::wstring& caption) {
 	_wsCaption = caption;
 
-	if (_hwnd != 0)
+	if (_hwnd != 0) {
 		SetWindowText(_hwnd, caption.c_str());
+	}
 }
 
 void Window::ResizeWindow(int width, int height){
 	_iWidth = width;
 	_iHeight = height;
+
+	_UpdateWindowState();
 }
 
 std::wstring Window::GetCaption() const {
@@ -184,25 +178,6 @@ void Window::SetSwapChain(int swapchain){
 	_iSwapChain = swapchain;
 }
 
-void Window::_UpdateWindowState(){
-	if (_hwnd != 0){
-		RECT ClientRect;
-		ClientRect.left = 0;
-		ClientRect.top = 0;
-		ClientRect.right = _iWidth;
-		ClientRect.bottom = _iHeight;
-
-		RECT WindowRect = ClientRect;
-		AdjustWindowRect(&WindowRect, _dwStyle, FALSE);
-
-		int deltaX = (WindowRect.right - ClientRect.right) / 2;
-		int deltaY = (WindowRect.bottom - ClientRect.bottom) / 2;
-
-		MoveWindow(_hwnd, _iLeft - deltaX, _iTop - deltaY,
-			_iWidth + deltaX * 2, _iHeight + deltaY * 2, true);
-	}
-}
-
 void Window::SetStyle(DWORD style){
 	_dwStyle = style;
 
@@ -211,5 +186,23 @@ void Window::SetStyle(DWORD style){
 
 DWORD Window::GetStyle() const {
 	return _dwStyle;
+}
+
+void Window::_UpdateWindowState() {
+	if (!_hwnd) return;
+
+	RECT ClientRect;
+	ClientRect.left = 0;
+	ClientRect.top = 0;
+	ClientRect.right = _iWidth;
+	ClientRect.bottom = _iHeight;
+
+	RECT WindowRect = ClientRect;
+	AdjustWindowRect(&WindowRect, _dwStyle, FALSE);
+
+	int deltaX = (WindowRect.right - ClientRect.right) / 2;
+	int deltaY = (WindowRect.bottom - ClientRect.bottom) / 2;
+
+	MoveWindow(_hwnd, _iLeft - deltaX, _iTop - deltaY, _iWidth + deltaX * 2, _iHeight + deltaY * 2, true);
 }
 

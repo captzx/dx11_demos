@@ -10,7 +10,7 @@ namespace insight {
 		virtual void Initialize(IWindowProc* windowProc);
 		virtual void Shutdown();
 
-		HWND& GetHandle();
+		HWND GetHandle() const;
 
 		int GetLeft() const;
 		int GetTop() const;

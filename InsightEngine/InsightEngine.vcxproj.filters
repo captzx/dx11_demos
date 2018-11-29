@@ -136,6 +136,12 @@
     <ClInclude Include="SwapChain.h">
       <Filter>Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="RenderingPipeline.h">
+      <Filter>Rendering\Pipeline System</Filter>
+    </ClInclude>
+    <ClInclude Include="ComSmartPointer.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -173,6 +179,9 @@
     </ClCompile>
     <ClCompile Include="SwapChain.cpp">
       <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderingPipeline.cpp">
+      <Filter>Rendering\Pipeline System</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

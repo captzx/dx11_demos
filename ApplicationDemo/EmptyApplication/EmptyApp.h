@@ -5,11 +5,7 @@
 namespace insight {
 	class EmptyApp: public Application {
 	public:
-		bool ConfigureEngineComponent() override;
-		void ShutdownEngineComponent() override;
 		void Initialize() override;
-		void Update() override;
-		void Shutdown() override;
 
 		std::wstring GetName() override;
 	};

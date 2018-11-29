@@ -38,9 +38,14 @@ using namespace DirectX;
 #include <DirectXColors.h>
 using namespace DirectX::Colors;
 
+void com_safe_release(IUnknown* x);
+#include "ComSmartPointer.h"
+
 #define SAFE_RELEASE( x ) {if(x){(x)->Release();(x)=NULL;}}
 #define SAFE_DELETE( x ) {if(x){delete (x);(x)=NULL;}}
 #define SAFE_DELETE_ARRAY( x ) {if(x){delete[] (x);(x)=NULL;}}
+
+
 
 // Define the number of threads to use for 
 #define NUM_THREADS 4

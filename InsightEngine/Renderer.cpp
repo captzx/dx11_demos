@@ -1,23 +1,20 @@
 #include "pch.h"
 #include "Renderer.h"
+#include "RenderingPipeline.h"
 #include "SwapChain.h"
 #include "Application.h"
 #include "Window.h"
 
 using namespace insight;
 
-Renderer* Renderer::spRenderer = nullptr;
 
-Renderer::Renderer() {
-	spRenderer = this;
+Renderer::Renderer():
+	_pImmPipeline(new RenderingPipeline())
+{
 
 }
 Renderer::~Renderer() {
-
-}
-
-Renderer* Renderer::Get() {
-	return spRenderer;
+	Shutdown();
 }
 
 bool Renderer::Initialize(D3D_DRIVER_TYPE driverType, D3D_FEATURE_LEVEL featureLevel) {
@@ -41,35 +38,18 @@ bool Renderer::Initialize(D3D_DRIVER_TYPE driverType, D3D_FEATURE_LEVEL featureL
 
 	D3D_FEATURE_LEVEL levels[] = { featureLevel };
 	D3D_FEATURE_LEVEL createdLevel;
-
+	ID3D11DeviceContext* pDeviceContext = nullptr;
 	if (DriverType == D3D_DRIVER_TYPE_HARDWARE) {
 		for (auto pAdapter : vAdapters) {
-			hr = D3D11CreateDevice(
-				pAdapter,
-				D3D_DRIVER_TYPE_UNKNOWN,
-				nullptr,
-				createDeviceFlags,
-				levels,
-				1,
-				D3D11_SDK_VERSION,
-				&_pDevice,
-				&createdLevel,
-				&_pDeviceContext);
+			hr = D3D11CreateDevice(pAdapter, D3D_DRIVER_TYPE_UNKNOWN, nullptr, createDeviceFlags, levels, 1, D3D11_SDK_VERSION,
+				&_pDevice, &createdLevel, &pDeviceContext);
 			if (hr == S_OK) break;
 		}
 	}
 	else {
 		hr = D3D11CreateDevice(
-			nullptr,		// default adapter
-			driverType,
-			nullptr,
-			createDeviceFlags,
-			levels,
-			1,
-			D3D11_SDK_VERSION,
-			&_pDevice,
-			&createdLevel,
-			&_pDeviceContext);
+			nullptr/*default adapter*/, driverType, nullptr, createDeviceFlags, levels, 1, D3D11_SDK_VERSION,
+			&_pDevice, &createdLevel, &pDeviceContext);
 	}
 
 	if (FAILED(hr)) {
@@ -77,7 +57,7 @@ bool Renderer::Initialize(D3D_DRIVER_TYPE driverType, D3D_FEATURE_LEVEL featureL
 		return false;
 	}
 	else {
-		// log createdLevel
+		_pImmPipeline->SetDeviceContext(pDeviceContext);
 	}
 
 	UINT uMassQuality;
@@ -86,14 +66,16 @@ bool Renderer::Initialize(D3D_DRIVER_TYPE driverType, D3D_FEATURE_LEVEL featureL
 	return hr;
 }
 void Renderer::Shutdown() {
+	SAFE_DELETE(_pImmPipeline);
+	SAFE_RELEASE(_pSwapChain);
+	SAFE_RELEASE(_pBackBuffer);
+	SAFE_RELEASE(_pRenderTargetView);
+	SAFE_RELEASE(_pDepthStencilView);
 	SAFE_RELEASE(_pDevice);
 }
 
 bool Renderer::CreateSwapChain(const HWND& hwnd) {
 	HRESULT hr = S_OK;
-
-	//IDXGIFactory* pFactory;
-	//hr = CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)(&pFactory));
 
 	IDXGIDevice* pDXGIDevice = nullptr;
 	_pDevice->QueryInterface(__uuidof(IDXGIDevice), reinterpret_cast<void **>(&pDXGIDevice));
@@ -103,8 +85,6 @@ bool Renderer::CreateSwapChain(const HWND& hwnd) {
 
 	IDXGIFactory* pDXGIFactory = nullptr;
 	pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), reinterpret_cast<void **>(&pDXGIFactory));
-
- ;
 
 	DXGI_SWAP_CHAIN_DESC scDesc;
 	scDesc.BufferDesc.Width = 800;
@@ -178,24 +158,41 @@ bool Renderer::CreateDepthStencilView() {
 	return hr;
 }
 
-bool Renderer::Extra() {
-	_pDeviceContext->ClearRenderTargetView(_pRenderTargetView, Colors::AliceBlue);
-	_pDeviceContext->OMSetRenderTargets(1, &_pRenderTargetView, _pDepthStencilView);
-
-
-
-	D3D11_VIEWPORT viewport;
-	viewport.Width = static_cast<float>(800);
-	viewport.Height = static_cast<float>(600);
-	viewport.MinDepth = 0.0f;
-	viewport.MaxDepth = 1.0f;
-	viewport.TopLeftX = 0;
-	viewport.TopLeftY = 0;
-
-	_pDeviceContext->RSSetViewports(1, &viewport);
-	return(true);
-}
-
 void Renderer::Present() {
 	_pSwapChain->Present(0, 0);
+}
+
+
+// ---------------------------------get----------------------------------
+ID3D11RenderTargetView* Renderer::GetRenderTargetView() {
+	ID3D11RenderTargetView* pRenderTargetView = nullptr;
+	auto hr = _pDevice->CreateRenderTargetView(_pBackBuffer, 0, &pRenderTargetView);
+	return pRenderTargetView;
+}
+
+
+ID3D11DepthStencilView* Renderer::GetDepthStencilView() {
+	ID3D11DepthStencilView* pDepthStencilView = nullptr;
+
+	D3D11_TEXTURE2D_DESC depthStencilDesc;
+	depthStencilDesc.Width = 800;
+	depthStencilDesc.Height = 600;
+	depthStencilDesc.MipLevels = 1;
+	depthStencilDesc.ArraySize = 1;
+	depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+
+	depthStencilDesc.SampleDesc.Count = 1;
+	depthStencilDesc.SampleDesc.Quality = 0;
+
+	depthStencilDesc.Usage = D3D11_USAGE_DEFAULT;
+	depthStencilDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	depthStencilDesc.CPUAccessFlags = 0;
+	depthStencilDesc.MiscFlags = 0;
+
+	ID3D11Texture2D*		pDepthStencilBuffer;
+	_pDevice->CreateTexture2D(&depthStencilDesc, NULL, &pDepthStencilBuffer);
+
+	_pDevice->CreateDepthStencilView(pDepthStencilBuffer, NULL, &_pDepthStencilView);	//创建深度/模板缓冲区及其相关的深度/模板视口
+
+	return _pDepthStencilView;
 }

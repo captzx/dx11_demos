@@ -132,8 +132,10 @@
     <ClInclude Include="Logger.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="RenderingPipeline.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SwapChain.h" />
+    <ClInclude Include="ComSmartPointer.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
@@ -148,6 +150,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="RenderingPipeline.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SwapChain.cpp" />
     <ClCompile Include="Timer.cpp" />
