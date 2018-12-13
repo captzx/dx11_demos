@@ -4,17 +4,23 @@
 #include "SwapChain.h"
 #include "Application.h"
 #include "Window.h"
-
+#include "Shader.h"
+#include "VertexShader.h"
+#include "PixelShader.h"
 using namespace insight;
 
+Renderer* _spRenderer = nullptr;
 
 Renderer::Renderer():
-	_pImmPipeline(new RenderingPipeline())
-{
-
+	_pImmPipeline(new RenderingPipeline()){
+	_spRenderer = this;
 }
 Renderer::~Renderer() {
 	Shutdown();
+}
+
+Renderer* Renderer::Get(){
+	return _spRenderer;
 }
 
 bool Renderer::Initialize(D3D_DRIVER_TYPE driverType, D3D_FEATURE_LEVEL featureLevel) {
@@ -74,7 +80,7 @@ void Renderer::Shutdown() {
 	SAFE_RELEASE(_pDevice);
 }
 
-bool Renderer::CreateSwapChain(const HWND& hwnd) {
+bool Renderer::CreateSwapChain(const SwapChainDesc& swapChainDesc) {
 	HRESULT hr = S_OK;
 
 	IDXGIDevice* pDXGIDevice = nullptr;
@@ -86,26 +92,7 @@ bool Renderer::CreateSwapChain(const HWND& hwnd) {
 	IDXGIFactory* pDXGIFactory = nullptr;
 	pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), reinterpret_cast<void **>(&pDXGIFactory));
 
-	DXGI_SWAP_CHAIN_DESC scDesc;
-	scDesc.BufferDesc.Width = 800;
-	scDesc.BufferDesc.Height =600;
-	scDesc.BufferDesc.RefreshRate.Denominator = 1;
-	scDesc.BufferDesc.RefreshRate.Numerator = 60;
-	scDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-	scDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-	scDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-
-	scDesc.SampleDesc.Count = 1;
-	scDesc.SampleDesc.Quality = 0;
-
-	scDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	scDesc.BufferCount = 1;
-	scDesc.OutputWindow = hwnd;
-	scDesc.Windowed = true;
-	scDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-	scDesc.Flags = 0;
-
-	hr = pDXGIFactory->CreateSwapChain(_pDevice, &scDesc, &_pSwapChain);
+	hr = pDXGIFactory->CreateSwapChain(_pDevice, &swapChainDesc.Get(), &_pSwapChain);
 	if (hr) {
 		//log
 	}
@@ -158,10 +145,101 @@ bool Renderer::CreateDepthStencilView() {
 	return hr;
 }
 
+int insight::Renderer::CreateInputLayout(std::vector<D3D11_INPUT_ELEMENT_DESC>& elements, int ShaderID){
+	D3D11_INPUT_ELEMENT_DESC* pElements = new D3D11_INPUT_ELEMENT_DESC[elements.size()];
+	for (unsigned int i = 0; i < elements.size(); i++)
+		pElements[i] = elements[i];
+
+	ID3DBlob* pCompiledShader = _vpShaders[ShaderID]->GetCompiledShader();
+	ID3D11InputLayout* pLayout;
+
+	HRESULT hr = _pDevice->CreateInputLayout(pElements, elements.size(),
+		pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), &pLayout);
+
+	delete[] pElements;
+
+	if (FAILED(hr)){
+		return(-1);
+	}
+
+	_vpInputLayouts.push_back(pLayout);
+
+	return(_vpInputLayouts.size() - 1);
+}
+
+int insight::Renderer::LoadShader(ShaderType type, std::wstring fileName, std::string entryFunc, std::string model){
+	for (size_t i = 0; i < _vpShaders.size(); ++i) {
+		Shader* pShader = _vpShaders[i];
+
+		if (pShader->IsExist(fileName, entryFunc, model)) {
+			return i;
+		}
+	}
+
+	HRESULT hr = S_OK;
+
+	UINT flags = D3DCOMPILE_PACK_MATRIX_ROW_MAJOR;
+#ifdef _DEBUG
+	flags |= D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+#endif
+
+	ID3DBlob* pCompiledShader = nullptr;
+	ID3DBlob* pErrorMessages = nullptr;
+	hr = D3DCompileFromFile(fileName.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, 
+		entryFunc.c_str(), model.c_str(), flags, NULL, &pCompiledShader, &pErrorMessages);
+
+	if (!pCompiledShader) {
+		return -1;
+	}
+
+	Shader* pShaderWrapper = nullptr;
+	switch (type) {
+		case VERTEX_SHADER:
+		{
+			ID3D11VertexShader* pShader = 0;
+
+			hr = _pDevice->CreateVertexShader(pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), 0, &pShader);
+
+			pShaderWrapper = new VertexShader(pShader);
+			break;
+		}
+		case PIXEL_SHADER:
+		{
+			ID3D11PixelShader* pShader = 0;
+
+			hr = _pDevice->CreatePixelShader(pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), 0, &pShader);
+
+			pShaderWrapper = new PixelShader(pShader);
+			break;
+		}
+	}
+
+	if (FAILED(hr)) {
+		pCompiledShader->Release();
+		
+		return -1;
+	}
+
+	pShaderWrapper->Set(fileName, entryFunc, model);
+
+	_vpShaders.push_back(pShaderWrapper);
+	pShaderWrapper->SetCompiledShader(pCompiledShader);
+
+	return _vpShaders.size() - 1;
+}
+
 void Renderer::Present() {
 	_pSwapChain->Present(0, 0);
 }
 
+
+Shader* insight::Renderer::GetShader(int index){
+	if (index < _vpShaders.size()) {
+		return _vpShaders[index];
+	}
+
+	return nullptr;
+}
 
 // ---------------------------------get----------------------------------
 ID3D11RenderTargetView* Renderer::GetRenderTargetView() {

@@ -142,6 +142,21 @@
     <ClInclude Include="ComSmartPointer.h">
       <Filter>Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="ShaderFactory.h">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexShader.h">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\2.VertexShaderStage</Filter>
+    </ClInclude>
+    <ClInclude Include="PixelShader.h">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\7.PixelShaderStage</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderEffect.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -182,6 +197,21 @@
     </ClCompile>
     <ClCompile Include="RenderingPipeline.cpp">
       <Filter>Rendering\Pipeline System</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderFactory.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexShader.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\2.VertexShaderStage</Filter>
+    </ClCompile>
+    <ClCompile Include="PixelShader.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\7.PixelShaderStage</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderEffect.cpp">
+      <Filter>Rendering</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
