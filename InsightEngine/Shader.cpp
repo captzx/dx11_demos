@@ -16,6 +16,7 @@ bool Shader::IsExist(std::wstring fileName, std::string function, std::string mo
 		_sShaderModel.compare(model) == 0) {
 		return true;
 	}
+	return false;
 }
 
 void Shader::Set(std::wstring fileName, std::string function, std::string model) {

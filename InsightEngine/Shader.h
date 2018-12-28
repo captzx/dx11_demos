@@ -9,7 +9,14 @@ namespace insight {
 		PIXEL_SHADER = 4,
 		COMPUTE_SHADER = 5
 	};
-
+	enum ShaderMask{
+		VERTEX_SHADER_MSK = 0x0001,
+		HULL_SHADER_MSK = 0x0002,
+		DOMAIN_SHADER_MSK = 0x0004,
+		GEOMETRY_SHADER_MSK = 0x0008,
+		PIXEL_SHADER_MSK = 0x0010,
+		COMPUTE_SHADER_MSK = 0x0020
+	};
 	class Shader {
 	public:
 		Shader();

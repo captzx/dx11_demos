@@ -1,4 +1,6 @@
 #pragma once
+#include "PipeResourceProxy.h"
+
 namespace insight {
 	class SwapChainDesc {
 	public:
@@ -18,10 +20,21 @@ namespace insight {
 
 	class SwapChain {
 	public:
-		SwapChain();
+		explicit SwapChain(ComPtr<IDXGISwapChain> pSwapChain, ResourcePtr resource) {
+			_pSwapChain = pSwapChain;
+			_Resource = resource;
+		}
+		virtual ~SwapChain() {
 
-		IDXGISwapChain* &Get();
+		}
+
+		IDXGISwapChain* Get() {
+			return _pSwapChain.Get();
+		}
+		ResourcePtr GetBuffer() { return _Resource; }
+
 	protected:
-		IDXGISwapChain* _pSwapChain;
+		ComPtr<IDXGISwapChain> _pSwapChain;
+		ResourcePtr _Resource;
 	};
 }

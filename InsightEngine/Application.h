@@ -2,8 +2,6 @@
 #include "IWindowProc.h"
 
 namespace insight {
-	class Window;
-	class Renderer;
 	class Application: public IWindowProc {
 	public:
 		Application();
@@ -23,7 +21,6 @@ namespace insight {
 		void RequestTermination();
 		LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) override;
 
-		Renderer* GetRenderer() {return _pRenderer;}
 	protected:
 		static Application* spApplication;
 	};

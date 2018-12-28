@@ -8,7 +8,7 @@ LRESULT CALLBACK InternalWindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM l
 	LONG_PTR WindowProcPtr = GetWindowLongPtr(hwnd, 0);
 
 	if (WindowProcPtr == 0) {
-		return DefWindowProc(hwnd, msg, wparam, lparam);
+ 		return DefWindowProc(hwnd, msg, wparam, lparam);
 	}
 	else {
 		return ((IWindowProc*)WindowProcPtr)->WindowProc(hwnd, msg, wparam, lparam);

@@ -2,6 +2,9 @@
 #include "RenderEffect.h"
 #include "Shader.h"
 #include "Renderer.h"
+#include "RenderingPipeline.h"
+
+#include "PipeBuffer.h"
 
 using namespace insight;
 
@@ -31,6 +34,16 @@ void RenderEffect::SetPixelShader(int index) {
 			// Log::Get().Write(L"Trying to bind a non-pixel shader to the pixel shader...");
 		}
 	}
+}
+
+void RenderEffect::ConfigurePipeline(RenderingPipeline* pPipeline) {
+	for (auto pcb : _vpConstBuffers) {
+
+		pcb->EvaluateMappings(pPipeline);
+	}
+
+	pPipeline->BindShader(VERTEX_SHADER, _aiIndices[VERTEX_SHADER]);
+	pPipeline->BindShader(PIXEL_SHADER, _aiIndices[PIXEL_SHADER]);
 }
 
 int RenderEffect::GetVertexShader() {

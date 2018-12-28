@@ -18,7 +18,7 @@ void SwapChainDesc::SetDefault() {
 	_scDesc.BufferDesc.Height = 1;
 	_scDesc.BufferDesc.RefreshRate.Denominator = 1;
 	_scDesc.BufferDesc.RefreshRate.Numerator = 60;
-	_scDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	_scDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	_scDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	_scDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 	
@@ -41,13 +41,4 @@ void SwapChainDesc::SetHeight(int height) {
 }
 void SwapChainDesc::SetOutputWindow(const HWND& hwnd) {
 	_scDesc.OutputWindow = hwnd;
-}
-
-
-SwapChain::SwapChain() {
-
-}
-
-IDXGISwapChain* &SwapChain::Get() {
-	return _pSwapChain;
 }

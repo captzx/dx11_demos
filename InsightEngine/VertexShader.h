@@ -8,7 +8,7 @@ namespace insight {
 		virtual ~VertexShader();
 
 		virtual ShaderType GetType() override;
-
+		ID3D11VertexShader* Get() { return _pVertexShader; }
 	private:
 		ID3D11VertexShader*	_pVertexShader = nullptr;
 	};

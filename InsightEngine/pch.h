@@ -41,6 +41,8 @@ using namespace DirectX::Colors;
 void com_safe_release(IUnknown* x);
 #include "ComSmartPointer.h"
 
+#include <wrl/client.h>
+using Microsoft::WRL::ComPtr;
 #define SAFE_RELEASE( x ) {if(x){(x)->Release();(x)=NULL;}}
 #define SAFE_DELETE( x ) {if(x){delete (x);(x)=NULL;}}
 #define SAFE_DELETE_ARRAY( x ) {if(x){delete[] (x);(x)=NULL;}}
