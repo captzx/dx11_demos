@@ -6,28 +6,28 @@
 
 using namespace insight;
 
-std::map<std::wstring, RenderParameter*> ParameterManager::sParameters;
+std::map<std::wstring, RenderParameter*> ParameterManager::sParameterMap;
 
 ParameterManager::ParameterManager(unsigned int id) {
-	_uiID = id;
-	_pManagerParent = nullptr;
+	_uID = id;
+	_pParentManager = nullptr;
 
 	_pWorldMatrix = GetMatrixParameterRef(std::wstring(L"WorldMatrix"));
 	_pViewMatrix = GetMatrixParameterRef(std::wstring(L"ViewMatrix"));
 	_pProjMatrix = GetMatrixParameterRef(std::wstring(L"ProjMatrix"));
 }
 ParameterManager::~ParameterManager() {
-	std::map< std::wstring, RenderParameter* >::iterator iter = sParameters.begin();
-	while (iter != sParameters.end()){
+	std::map< std::wstring, RenderParameter* >::iterator iter = sParameterMap.begin();
+	while (iter != sParameterMap.end()){
 		SAFE_DELETE(iter->second);
 		++iter;
 	}
 
-	sParameters.clear();
+	sParameterMap.clear();
 }
 
 unsigned int ParameterManager::GetID(){
-	return _uiID;
+	return _uID;
 }
 void ParameterManager::SetMatrixParameter(RenderParameter* pParameter, XMFLOAT4X4* pMatrix){
 	if (pParameter->GetParameterType() == MATRIX)
@@ -43,7 +43,7 @@ void ParameterManager::SetMatrixParameter(const std::wstring& name, XMFLOAT4X4* 
 		pParameter = new MatrixParameter();
 		pParameter->SetName(name);
 
-		sParameters[name] = pParameter;
+		sParameterMap[name] = pParameter;
 
 		pParameter->InitializeParameterData(reinterpret_cast<void*>(pParameter));
 	}
@@ -56,12 +56,12 @@ void ParameterManager::SetMatrixParameter(const std::wstring& name, XMFLOAT4X4* 
 }
 
 void ParameterManager::SetConstantBufferParameter(const std::wstring& name, std::shared_ptr<PipeResourceProxy> resource) {
-	RenderParameter* pParameter = sParameters[name];
+	RenderParameter* pParameter = sParameterMap[name];
 
 	if (!pParameter) {
 		pParameter = new ConstantBufferParameter();
 		pParameter->SetName(name);
-		sParameters[name] = reinterpret_cast<RenderParameter*>(pParameter);
+		sParameterMap[name] = reinterpret_cast<RenderParameter*>(pParameter);
 
 		pParameter->InitializeParameterData(reinterpret_cast<void*>(resource->_iResource));
 	}
@@ -79,10 +79,10 @@ void ParameterManager::SetConstantBufferParameter(RenderParameter* pParameter, s
 }
 
 RenderParameter* ParameterManager::GetRenderParameterRef(const std::wstring& name) {
-	RenderParameter* pParameter = sParameters[name];
+	RenderParameter* pParameter = sParameterMap[name];
 
-	if (!pParameter && _pManagerParent) {
-		pParameter = _pManagerParent->GetRenderParameterRef(name);
+	if (!pParameter && _pParentManager) {
+		pParameter = _pParentManager->GetRenderParameterRef(name);
 	}
 
 	return pParameter;
@@ -94,7 +94,7 @@ MatrixParameter* ParameterManager::GetMatrixParameterRef(const std::wstring name
 		pParameter = new MatrixParameter();
 		pParameter->SetName(name);
 
-		sParameters[name] = pParameter;
+		sParameterMap[name] = pParameter;
 	}
 
 	return reinterpret_cast<MatrixParameter*>(pParameter);
@@ -106,7 +106,7 @@ ConstantBufferParameter* ParameterManager::GetConstantBufferParameterRef(const s
 		pParameter = new ConstantBufferParameter();
 		pParameter->SetName(name);
 
-		sParameters[name] = pParameter;
+		sParameterMap[name] = pParameter;
 	}
 
 	return reinterpret_cast<ConstantBufferParameter*>(pParameter);
@@ -147,7 +147,7 @@ XMMATRIX ParameterManager::GetMatrixParameter(const std::wstring name) {
 		pParameter = new MatrixParameter();
 		pParameter->SetName(name);
 
-		sParameters[name] = pParameter;
+		sParameterMap[name] = pParameter;
 	}
 
 	return result;
@@ -166,7 +166,7 @@ int ParameterManager::GetConstantBufferParameter(const std::wstring name) {
 	else {
 		pParameter = new ConstantBufferParameter();
 		pParameter->SetName(name);
-		sParameters[name] = pParameter;
+		sParameterMap[name] = pParameter;
 	}
 
 	return result;

@@ -8,12 +8,12 @@
 #include "PipeResourceProxy.h"
 
 namespace insight {
-	class RenderEffect;
 	enum ShaderType;
-	class RenderParameter;
-	class IParameterManager;
 	class PipeResource;
 	class ConstantBuffer;
+	class RenderEffect;
+	class RenderParameter;
+	class IParameterManager;
 	class RenderingPipeline {
 	public:
 		RenderingPipeline();
@@ -46,7 +46,7 @@ namespace insight {
 		VertexShaderStage VertexShaderStage;
 		PixelShaderStage PixelShaderStage;
 
-		ProgrammableStage* ProgrammableStage[6];
+		ProgrammableStage* apProgrammableStages[6];
 
 	private:
 		ComPtr<ID3D11DeviceContext>  _pDeviceContext;

@@ -16,7 +16,7 @@ namespace insight {
 	class PipeResource {
 	public:
 		PipeResource() {
-			_uid = sIDCounter;
+			_uID = sIDCounter;
 			++sIDCounter;
 		}
 		virtual ~PipeResource() {}
@@ -24,9 +24,9 @@ namespace insight {
 		virtual PipeResourceType GetType() = 0;
 		virtual ID3D11Resource* GetResource() = 0;
 
-		virtual unsigned int GetUID() { return _uid; }
+		virtual unsigned int GetUID() { return _uID; }
 		static unsigned int sIDCounter;
 	protected:
-		unsigned int _uid;
+		unsigned int _uID;
 	};
 }

@@ -35,6 +35,6 @@ namespace insight {
 		const OutputMergerState& GetCurrentState() const;
 		OutputMergerState DesiredState;
 	protected:
-		OutputMergerState CurrentState;
+		OutputMergerState _currentState;
 	};
 }

@@ -81,8 +81,8 @@ bool Renderer::Initialize(D3D_DRIVER_TYPE driverType, D3D_FEATURE_LEVEL featureL
 		_pImmPipeline->SetDeviceContext(pDeviceContext);
 	}
 
-	_pRenderTargetViews.emplace_back(ComPtr<ID3D11RenderTargetView>());
-	_pDepthStencilViews.emplace_back(ComPtr<ID3D11DepthStencilView>());
+	_vpRenderTargetViews.emplace_back(ComPtr<ID3D11RenderTargetView>());
+	_vpDepthStencilViews.emplace_back(ComPtr<ID3D11DepthStencilView>());
 
 	UINT uMassQuality;
 	hr = _pDevice->CheckMultisampleQualityLevels(DXGI_FORMAT_R8G8B8A8_UNORM, 4, &uMassQuality);
@@ -93,7 +93,7 @@ void Renderer::Shutdown() {
 	SAFE_DELETE(_pParameterManager);
 	SAFE_DELETE(_pImmPipeline);
 
-	for (auto pResource : _pPipeResources)
+	for (auto pResource : _vpPipeResources)
 		delete pResource;
 
 	for (auto pSwapChain : _vSwapChains) {
@@ -102,7 +102,7 @@ void Renderer::Shutdown() {
 		}
 		delete pSwapChain;
 	}
-	for (auto pShader : _pShaders)
+	for (auto pShader : _vpShaders)
 		delete pShader;
 }
 
@@ -170,8 +170,8 @@ int Renderer::CreateRenderTargetView(int ResourceID, D3D11_RENDER_TARGET_VIEW_DE
 			HRESULT hr = _pDevice->CreateRenderTargetView(pRawResource, pDesc, &pView);
 
 			if (pView) {
-				_pRenderTargetViews.push_back(pView);
-				return _pRenderTargetViews.size() - 1;
+				_vpRenderTargetViews.push_back(pView);
+				return _vpRenderTargetViews.size() - 1;
 			}
 		}
 	}
@@ -190,8 +190,8 @@ int Renderer::CreateDepthStencilView(int ResourceID, D3D11_DEPTH_STENCIL_VIEW_DE
 			HRESULT hr = _pDevice->CreateDepthStencilView(pRawResource, pDesc, &pView);
 
 			if (pView) {
-				_pDepthStencilViews.push_back(pView);
-				return _pDepthStencilViews.size() - 1;
+				_vpDepthStencilViews.push_back(pView);
+				return _vpDepthStencilViews.size() - 1;
 			}
 		}
 	}
@@ -204,7 +204,7 @@ int Renderer::CreateInputLayout(std::vector<D3D11_INPUT_ELEMENT_DESC>& elements,
 	for (unsigned int i = 0; i < elements.size(); i++)
 		pElements[i] = elements[i];
 
-	ID3DBlob* pCompiledShader = _pShaders[ShaderID]->GetCompiledShader();
+	ID3DBlob* pCompiledShader = _vpShaders[ShaderID]->GetCompiledShader();
 	ID3D11InputLayout* pLayout;
 
 	HRESULT hr = _pDevice->CreateInputLayout(pElements, 2, pCompiledShader->GetBufferPointer(), pCompiledShader->GetBufferSize(), &pLayout);
@@ -213,16 +213,16 @@ int Renderer::CreateInputLayout(std::vector<D3D11_INPUT_ELEMENT_DESC>& elements,
 		return(-1);
 	}
 
-	_pInputLayouts.push_back(pLayout);
+	_vpInputLayouts.push_back(pLayout);
 
 	SAFE_DELETE(pElements);
 
-	return(_pInputLayouts.size() - 1);
+	return(_vpInputLayouts.size() - 1);
 }
 
 int Renderer::LoadShader(ShaderType type, LPCWSTR fileName, _In_ LPCSTR entryFunc, _In_ LPCSTR model){
-	for (size_t i = 0; i < _pShaders.size(); ++i) {
-		Shader* pShader = _pShaders[i];
+	for (size_t i = 0; i < _vpShaders.size(); ++i) {
+		Shader* pShader = _vpShaders[i];
 
 		if (pShader->IsExist(fileName, entryFunc, model)) {
 			return i;
@@ -275,7 +275,7 @@ int Renderer::LoadShader(ShaderType type, LPCWSTR fileName, _In_ LPCSTR entryFun
 
 	pShaderWrapper->Set(fileName, entryFunc, model);
 
-	_pShaders.push_back(pShaderWrapper);
+	_vpShaders.push_back(pShaderWrapper);
 	pShaderWrapper->SetCompiledShader(pCompiledShader);
 
 	ShaderReflection* pReflection = ShaderReflectionFactory::GenerateReflection(*pShaderWrapper);
@@ -284,7 +284,7 @@ int Renderer::LoadShader(ShaderType type, LPCWSTR fileName, _In_ LPCSTR entryFun
 
 	pShaderWrapper->SetReflection(pReflection);
 
-	return _pShaders.size() - 1;
+	return _vpShaders.size() - 1;
 }
 
 std::shared_ptr<PipeResourceProxy> Renderer::CreateVertexBuffer(PipeBufferDesc* pDesc, D3D11_SUBRESOURCE_DATA* pData) {
@@ -357,8 +357,8 @@ void Renderer::Present(HWND hWnd, int SwapChainID, UINT SyncInterval, UINT Prese
 }
 
 Shader* Renderer::GetShader(size_t index){
-	if (index < _pShaders.size()) {
-		return _pShaders[index];
+	if (index < _vpShaders.size()) {
+		return _vpShaders[index];
 	}
 
 	return nullptr;
@@ -478,16 +478,16 @@ ConstantBuffer* Renderer::GetConstantBufferByIndex(int rid){
 //	return pResult;
 //}
 RenderTargetView& Renderer::GetRenderTargetViewByIndex(int rid) {
-	return _pRenderTargetViews[rid];
+	return _vpRenderTargetViews[rid];
 }
 
 
 DepthStencilView& Renderer::GetDepthStencilViewByIndex(int rid) {
-	return _pDepthStencilViews[rid];
+	return _vpDepthStencilViews[rid];
 }
 ComPtr<ID3D11InputLayout> Renderer::GetInputLayout(size_t index){
-	if (index <= _pInputLayouts.size()) {
-		return _pInputLayouts[index];
+	if (index <= _vpInputLayouts.size()) {
+		return _vpInputLayouts[index];
 	}
 	return nullptr;
 }
@@ -495,8 +495,8 @@ ComPtr<ID3D11InputLayout> Renderer::GetInputLayout(size_t index){
 int	Renderer::_GetUnusedResourceIndex(){
 	int index = -1;
 
-	for (unsigned int i = 0; i < _pPipeResources.size(); i++) {
-		if (_pPipeResources[i] == NULL) {
+	for (unsigned int i = 0; i < _vpPipeResources.size(); i++) {
+		if (_vpPipeResources[i] == NULL) {
 			index = i;
 			break;
 		}
@@ -508,11 +508,11 @@ int	Renderer::_StoreNewResource(PipeResource* pResource){
 	int index = _GetUnusedResourceIndex();
 
 	if (index == -1) {
-		_pPipeResources.push_back(pResource);
-		index = _pPipeResources.size() - 1;
+		_vpPipeResources.push_back(pResource);
+		index = _vpPipeResources.size() - 1;
 	}
 	else {
-		_pPipeResources[index] = pResource;
+		_vpPipeResources[index] = pResource;
 	}
 
 	int innerID = (int)pResource->GetUID() << 16;
@@ -527,8 +527,8 @@ PipeResource* Renderer::_GetResourceByIndex(int ID){
 	unsigned int index = ID & 0xffff;
 	int innerID = (ID & 0xffff0000) >> 16;
 
-	if (index < _pPipeResources.size()) {
-		pResource = _pPipeResources[index];
+	if (index < _vpPipeResources.size()) {
+		pResource = _vpPipeResources[index];
 
 		if (pResource->GetUID() != innerID) {
 			

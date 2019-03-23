@@ -6,38 +6,39 @@ namespace insight {
 	public:
 		Window();
 		virtual ~Window();
+
 	public:
 		virtual void Initialize(IWindowProc* windowProc);
 		virtual void Shutdown();
 
+	public:
 		HWND GetHandle() const;
+		int GetSwapChain() const;
 
 		int GetLeft() const;
 		int GetTop() const;
-
-		DWORD GetStyle() const;
-		void SetStyle(DWORD dStyle);
-
 		int GetWidth() const;
-		void SetWidth(int width);
-
 		int GetHeight() const;
-		void SetHeight(int height);
-
+		DWORD GetStyle() const;
 		std::wstring GetCaption() const;
-		void SetCaption(const std::wstring& caption);
+		POINT GetCursorPosition() const;
 
+		void SetStyle(DWORD dStyle);
+		void SetWidth(int width);
+		void SetHeight(int height);
+		void SetCaption(const std::wstring& caption);
 		void SetSize(int width, int height);
 		void SetPosition(int left, int top);
-
-		int GetSwapChain() const;
 		void SetSwapChain(int swapchain);
 
-		POINT GetCursorPosition() const;
 		void ResizeWindow(int width, int height);
 
 	protected:
-		HWND _hwnd = NULL;
+		void _UpdateWindowState();
+
+	protected:
+		HWND _hWnd = NULL;
+
 		DWORD _dwStyle = (WS_OVERLAPPEDWINDOW | WS_VISIBLE);
 		std::wstring _wsCaption = L"App";
 		int	_iWidth = 800;
@@ -46,7 +47,5 @@ namespace insight {
 		int	_iTop;
 
 		int	_iSwapChain = -1;
-
-		void _UpdateWindowState();
 	};
 }

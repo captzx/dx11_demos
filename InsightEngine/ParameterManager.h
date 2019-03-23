@@ -62,14 +62,14 @@ namespace insight {
 		virtual void SetProjMatrixParameter(XMFLOAT4X4* pMatrix) override;
 
 	protected:
-		IParameterManager* _pManagerParent;
-		unsigned int _uiID;
+		IParameterManager* _pParentManager;
+		unsigned int _uID;
 
 		MatrixParameter* _pWorldMatrix;
 		MatrixParameter* _pViewMatrix;
 		MatrixParameter* _pProjMatrix;
 
 	public:
-		static std::map<std::wstring, RenderParameter*>	sParameters;
+		static std::map<std::wstring, RenderParameter*>	sParameterMap;
 	};
 }

@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Window.h"
+
 #include "IWindowProc.h"
 
 using namespace insight;
@@ -58,54 +59,45 @@ void Window::Initialize(IWindowProc* MsgProc) {
 	long adjust_iWidth = rect.right - rect.left;
 	long adjust_iHeight = rect.bottom - rect.top;
 
-	_hwnd = CreateWindowEx(NULL, wc.lpszClassName, _wsCaption.c_str(), _dwStyle, 
+	_hWnd = CreateWindowEx(NULL, wc.lpszClassName, _wsCaption.c_str(), _dwStyle, 
 		_iLeft, _iTop, adjust_iWidth, adjust_iHeight, NULL, NULL, NULL, NULL);
 
-	GetClientRect(_hwnd, &rect);
+	GetClientRect(_hWnd, &rect);
 	_iWidth = rect.right - rect.left;
 	_iHeight = rect.bottom - rect.top;
 
-	if (_hwnd) {
-		SetWindowLongPtr(_hwnd, 0, (LONG_PTR)MsgProc);
+	if (_hWnd) {
+		SetWindowLongPtr(_hWnd, 0, (LONG_PTR)MsgProc);
 
-		ShowWindow(_hwnd, SW_SHOWNORMAL);
-		UpdateWindow(_hwnd);
+		ShowWindow(_hWnd, SW_SHOWNORMAL);
+		UpdateWindow(_hWnd);
 	}
 }
 
 void Window::Shutdown() {
-	if (_hwnd)
-		DestroyWindow(_hwnd);
+	if (_hWnd)
+		DestroyWindow(_hWnd);
 
-	_hwnd = 0;
+	_hWnd = 0;
 }
 
 POINT Window::GetCursorPosition() const {
-	POINT p;
-	GetCursorPos(&p);
-	ScreenToClient(_hwnd, &p);
+	POINT pos;
+	GetCursorPos(&pos);
+	ScreenToClient(_hWnd, &pos);
 
-	return p;
+	return pos;
 }
 
 HWND Window::GetHandle() const{
-	return _hwnd;
-}
-
-void Window::SetWidth(int width){
-	_iWidth = width;
-	_UpdateWindowState();
-}
-void Window::SetHeight(int height){
-	_iHeight = height;
-	_UpdateWindowState();
+	return _hWnd;
 }
 
 int Window::GetWidth() const {
 	RECT rect;
 	memset(&rect, 0, sizeof(rect));
 
-	GetClientRect(_hwnd, &rect);
+	GetClientRect(_hWnd, &rect);
 
 	return rect.right - rect.left;
 }
@@ -114,7 +106,7 @@ int Window::GetHeight() const {
 	RECT rect;
 	memset(&rect, 0, sizeof(rect));
 
-	GetClientRect(_hwnd, &rect);
+	GetClientRect(_hWnd, &rect);
 
 	return rect.bottom - rect.top;
 }
@@ -123,7 +115,7 @@ int Window::GetLeft() const {
 	POINT point;
 	memset(&point, 0, sizeof(point));
 
-	ClientToScreen(_hwnd, &point);
+	ClientToScreen(_hWnd, &point);
 
 	return point.x;
 }
@@ -132,9 +124,27 @@ int Window::GetTop() const {
 	POINT point;
 	memset(&point, 0, sizeof(point));
 
-	ClientToScreen(_hwnd, &point);
+	ClientToScreen(_hWnd, &point);
 
 	return point.y;
+}
+
+std::wstring Window::GetCaption() const {
+	return _wsCaption;
+}
+
+DWORD Window::GetStyle() const {
+	return _dwStyle;
+}
+
+void Window::SetWidth(int width) {
+	_iWidth = width;
+	_UpdateWindowState();
+}
+
+void Window::SetHeight(int height) {
+	_iHeight = height;
+	_UpdateWindowState();
 }
 
 void Window::SetSize(int width, int height){
@@ -154,8 +164,8 @@ void Window::SetPosition(int left, int top){
 void Window::SetCaption(const std::wstring& caption) {
 	_wsCaption = caption;
 
-	if (_hwnd != 0) {
-		SetWindowText(_hwnd, caption.c_str());
+	if (_hWnd != 0) {
+		SetWindowText(_hWnd, caption.c_str());
 	}
 }
 
@@ -166,14 +176,6 @@ void Window::ResizeWindow(int width, int height){
 	_UpdateWindowState();
 }
 
-std::wstring Window::GetCaption() const {
-	return _wsCaption;
-}
-
-int Window::GetSwapChain() const {
-	return _iSwapChain;
-}
-
 void Window::SetSwapChain(int swapchain){
 	_iSwapChain = swapchain;
 }
@@ -181,15 +183,15 @@ void Window::SetSwapChain(int swapchain){
 void Window::SetStyle(DWORD style){
 	_dwStyle = style;
 
-	SetWindowLongPtr(_hwnd, GWL_EXSTYLE, _dwStyle);
+	SetWindowLongPtr(_hWnd, GWL_EXSTYLE, _dwStyle);
 }
 
-DWORD Window::GetStyle() const {
-	return _dwStyle;
+int Window::GetSwapChain() const {
+	return _iSwapChain;
 }
 
 void Window::_UpdateWindowState() {
-	if (!_hwnd) return;
+	if (!_hWnd) return;
 
 	RECT ClientRect;
 	ClientRect.left = 0;
@@ -203,6 +205,6 @@ void Window::_UpdateWindowState() {
 	int deltaX = (WindowRect.right - ClientRect.right) / 2;
 	int deltaY = (WindowRect.bottom - ClientRect.bottom) / 2;
 
-	MoveWindow(_hwnd, _iLeft - deltaX, _iTop - deltaY, _iWidth + deltaX * 2, _iHeight + deltaY * 2, true);
+	MoveWindow(_hWnd, _iLeft - deltaX, _iTop - deltaY, _iWidth + deltaX * 2, _iHeight + deltaY * 2, true);
 }
 

@@ -12,6 +12,6 @@ namespace insight {
 
 		D3D11_VIEWPORT Get() const;
 	protected:
-		D3D11_VIEWPORT _vp;
+		D3D11_VIEWPORT _viewPort;
 	};
 }

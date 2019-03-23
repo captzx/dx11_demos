@@ -82,12 +82,12 @@ namespace insight {
 		std::vector<SwapChain*>	_vSwapChains;
 		std::vector<ViewPort> _vViewPorts;
 
-		std::vector <RenderTargetView>  _pRenderTargetViews;
-		std::vector <DepthStencilView> _pDepthStencilViews;
+		std::vector <RenderTargetView>  _vpRenderTargetViews;
+		std::vector <DepthStencilView> _vpDepthStencilViews;
 
-		std::vector<PipeResource*> _pPipeResources;
+		std::vector<PipeResource*> _vpPipeResources;
 
-		std::vector<Shader*> _pShaders;
-		std::vector<ComPtr<ID3D11InputLayout>> _pInputLayouts;
+		std::vector<Shader*> _vpShaders;
+		std::vector<ComPtr<ID3D11InputLayout>> _vpInputLayouts;
 	};
 }

@@ -30,7 +30,7 @@ namespace insight {
 
 	protected:
 		std::wstring _wsName;
-		unsigned int _uiValueIDs[NUM_THREADS + 1];
+		unsigned int _auValueIDs[NUM_THREADS + 1];
 	};
 
 
@@ -46,7 +46,7 @@ namespace insight {
 		XMMATRIX GetMatrix(unsigned int threadID);
 
 	protected:
-		XMFLOAT4X4 _Matrixs[NUM_THREADS + 1];
+		XMFLOAT4X4 _aMatrixs[NUM_THREADS + 1];
 	};
 
 	class ConstantBufferParameter :public RenderParameter {
@@ -61,6 +61,6 @@ namespace insight {
 		int GetResourceIndex(unsigned int threadID);
 
 	protected:
-		int _iConstBuffers[NUM_THREADS + 1];
+		int _aiConstantBuffers[NUM_THREADS + 1];
 	};
 }

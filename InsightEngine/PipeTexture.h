@@ -8,15 +8,15 @@ namespace insight {
 		virtual ~Texture2D() {}
 
 		D3D11_TEXTURE2D_DESC GetActualDescription();
-		D3D11_TEXTURE2D_DESC GetDesiredDescription() { return _DesiredDesc; }
-		void SetDesiredDescription(D3D11_TEXTURE2D_DESC description) { _DesiredDesc = description; }
+		D3D11_TEXTURE2D_DESC GetDesiredDescription() { return _desiredDesc; }
+		void SetDesiredDescription(D3D11_TEXTURE2D_DESC description) { _desiredDesc = description; }
 
 		virtual PipeResourceType GetType() override { return PRT_TEXTURE2D; }
 		virtual ID3D11Resource*	GetResource() { return _pTexture.Get(); }
 
 	protected:
 		ComPtr<ID3D11Texture2D>	_pTexture;
-		D3D11_TEXTURE2D_DESC _DesiredDesc;
-		D3D11_TEXTURE2D_DESC _ActualDesc;
+		D3D11_TEXTURE2D_DESC _desiredDesc;
+		D3D11_TEXTURE2D_DESC _actualDesc;
 	};
 }

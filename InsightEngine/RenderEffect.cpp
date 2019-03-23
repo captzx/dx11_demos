@@ -53,7 +53,7 @@ void RenderEffect::_UpdateConstantBufferList() {
 			ShaderReflection* pReflection = pShader->GetReflection();
 
 			for (size_t j = 0; j < pReflection->ConstantBuffers.size(); ++j) {
-				RenderParameter* pParameter = pReflection->ConstantBuffers[i].pParamRef;
+				RenderParameter* pParameter = pReflection->ConstantBuffers[i].pParameterRef;
 
 				bool bAlreadyThere = false;
 

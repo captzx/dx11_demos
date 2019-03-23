@@ -128,7 +128,6 @@
     <ClInclude Include="Asset.h" />
     <ClInclude Include="AssetLoader.h" />
     <ClInclude Include="AssetManager.h" />
-    <ClInclude Include="D3DEnumConversion.h" />
     <ClInclude Include="InputAssemblerStage.h" />
     <ClInclude Include="OutputMergerStage.h" />
     <ClInclude Include="ParameterManager.h" />
@@ -153,7 +152,6 @@
     <ClInclude Include="RenderParameter.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
-    <ClInclude Include="ShaderFactory.h" />
     <ClInclude Include="ShaderReflection.h" />
     <ClInclude Include="SwapChain.h" />
     <ClInclude Include="ComSmartPointer.h" />
@@ -172,7 +170,6 @@
     <ClCompile Include="Asset.cpp" />
     <ClCompile Include="AssetLoader.cpp" />
     <ClCompile Include="AssetManager.cpp" />
-    <ClCompile Include="D3DEnumConversion.cpp" />
     <ClCompile Include="InputAssemblerStage.cpp" />
     <ClCompile Include="OutputMergerStage.cpp" />
     <ClCompile Include="ParameterManager.cpp" />
@@ -199,7 +196,6 @@
     <ClCompile Include="RenderParameter.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="ShaderFactory.cpp" />
     <ClCompile Include="ShaderReflection.cpp" />
     <ClCompile Include="SwapChain.cpp" />
     <ClCompile Include="PipeTextureDesc.cpp" />

@@ -44,9 +44,6 @@
     <Filter Include="Rendering\Pipeline System\Stages\Programmable Stages">
       <UniqueIdentifier>{472e1793-2335-4001-8bf5-ff34fac172a6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Rendering\Pipeline System\Stages\Programmable Stages\Shader">
-      <UniqueIdentifier>{d67ea06e-9086-481c-b072-b9a7514a71aa}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Rendering\Pipeline System\Stages\Common">
       <UniqueIdentifier>{48470237-7ea0-4a28-b329-f20a952da466}</UniqueIdentifier>
     </Filter>
@@ -55,24 +52,6 @@
     </Filter>
     <Filter Include="Objects\Scene Objects">
       <UniqueIdentifier>{6fdb4c1d-592e-4ba0-b8b1-bac9f9bbbc93}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Rendering\Pipeline System\Stages\Programmable Stages\2.VertexShaderStage">
-      <UniqueIdentifier>{2250f46f-c8b6-4c89-a2b5-b8b486133329}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Rendering\Pipeline System\Stages\Programmable Stages\3.HullShaderStage">
-      <UniqueIdentifier>{0c9cae82-e44a-4ac8-af8b-aee60c6d6ca1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Rendering\Pipeline System\Stages\Programmable Stages\4.DomainShaderStage">
-      <UniqueIdentifier>{a006b809-2786-4fa9-845b-d5b5c3d3e93c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Rendering\Pipeline System\Stages\Programmable Stages\5.GeometryShaderStage">
-      <UniqueIdentifier>{60c4b299-d176-4c71-8d90-4f3a7d5bbd20}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Rendering\Pipeline System\Stages\Programmable Stages\7.PixelShaderStage">
-      <UniqueIdentifier>{3334bf91-4db9-4097-b7fc-2e32f493a27e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Rendering\Pipeline System\Stages\Programmable Stages\E.ComputeShaderStage">
-      <UniqueIdentifier>{c8572630-f225-4ddd-8c4d-21a6d61f26c9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Input">
       <UniqueIdentifier>{f64ba55e-876f-4327-8537-49d5f2d39fe1}</UniqueIdentifier>
@@ -85,6 +64,12 @@
     </Filter>
     <Filter Include="Geometry">
       <UniqueIdentifier>{454e140b-3947-4e64-ba82-c23092ebbb7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\Pipeline System\Shader">
+      <UniqueIdentifier>{d67ea06e-9086-481c-b072-b9a7514a71aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Rendering\Pipeline System\Parameter">
+      <UniqueIdentifier>{0e637d1e-ce4f-4334-9c32-c8ed7b989169}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -131,16 +116,7 @@
       <Filter>Utilities</Filter>
     </ClInclude>
     <ClInclude Include="Shader.h">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="ShaderFactory.h">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexShader.h">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\2.VertexShaderStage</Filter>
-    </ClInclude>
-    <ClInclude Include="PixelShader.h">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\7.PixelShaderStage</Filter>
+      <Filter>Rendering\Pipeline System\Shader</Filter>
     </ClInclude>
     <ClInclude Include="RenderEffect.h">
       <Filter>Rendering</Filter>
@@ -181,26 +157,11 @@
     <ClInclude Include="ViewPort.h">
       <Filter>Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="VertexShaderStage.h">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\2.VertexShaderStage</Filter>
-    </ClInclude>
-    <ClInclude Include="ProgrammableStage.h">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages</Filter>
-    </ClInclude>
-    <ClInclude Include="PixelShaderStage.h">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\7.PixelShaderStage</Filter>
-    </ClInclude>
     <ClInclude Include="ShaderReflection.h">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader</Filter>
+      <Filter>Rendering\Pipeline System\Shader</Filter>
     </ClInclude>
     <ClInclude Include="Tools.h">
       <Filter>Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="ParameterManager.h">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages</Filter>
-    </ClInclude>
-    <ClInclude Include="D3DEnumConversion.h">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader</Filter>
     </ClInclude>
     <ClInclude Include="OutputMergerStage.h">
       <Filter>Rendering\Pipeline System\Stages\Fixed Stages</Filter>
@@ -211,8 +172,26 @@
     <ClInclude Include="RasterizerStage.h">
       <Filter>Rendering\Pipeline System\Stages\Fixed Stages</Filter>
     </ClInclude>
-    <ClInclude Include="RenderParameter.h">
+    <ClInclude Include="PixelShader.h">
+      <Filter>Rendering\Pipeline System\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexShader.h">
+      <Filter>Rendering\Pipeline System\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="PixelShaderStage.h">
       <Filter>Rendering\Pipeline System\Stages\Programmable Stages</Filter>
+    </ClInclude>
+    <ClInclude Include="ProgrammableStage.h">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexShaderStage.h">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages</Filter>
+    </ClInclude>
+    <ClInclude Include="ParameterManager.h">
+      <Filter>Rendering\Pipeline System\Parameter</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderParameter.h">
+      <Filter>Rendering\Pipeline System\Parameter</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -256,16 +235,7 @@
       <Filter>Rendering\Pipeline System</Filter>
     </ClCompile>
     <ClCompile Include="Shader.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="ShaderFactory.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="VertexShader.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\2.VertexShaderStage</Filter>
-    </ClCompile>
-    <ClCompile Include="PixelShader.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\7.PixelShaderStage</Filter>
+      <Filter>Rendering\Pipeline System\Shader</Filter>
     </ClCompile>
     <ClCompile Include="RenderEffect.cpp">
       <Filter>Rendering</Filter>
@@ -300,26 +270,11 @@
     <ClCompile Include="ViewPort.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="VertexShaderStage.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\2.VertexShaderStage</Filter>
-    </ClCompile>
-    <ClCompile Include="ProgrammableStage.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages</Filter>
-    </ClCompile>
-    <ClCompile Include="PixelShaderStage.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\7.PixelShaderStage</Filter>
-    </ClCompile>
     <ClCompile Include="ShaderReflection.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader</Filter>
+      <Filter>Rendering\Pipeline System\Shader</Filter>
     </ClCompile>
     <ClCompile Include="Tools.cpp">
       <Filter>Utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="ParameterManager.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages</Filter>
-    </ClCompile>
-    <ClCompile Include="D3DEnumConversion.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader</Filter>
     </ClCompile>
     <ClCompile Include="OutputMergerStage.cpp">
       <Filter>Rendering\Pipeline System\Stages\Fixed Stages</Filter>
@@ -330,8 +285,26 @@
     <ClCompile Include="RasterizerStage.cpp">
       <Filter>Rendering\Pipeline System\Stages\Fixed Stages</Filter>
     </ClCompile>
-    <ClCompile Include="RenderParameter.cpp">
+    <ClCompile Include="PixelShader.cpp">
+      <Filter>Rendering\Pipeline System\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexShader.cpp">
+      <Filter>Rendering\Pipeline System\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="PixelShaderStage.cpp">
       <Filter>Rendering\Pipeline System\Stages\Programmable Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="ProgrammableStage.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexShaderStage.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="ParameterManager.cpp">
+      <Filter>Rendering\Pipeline System\Parameter</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderParameter.cpp">
+      <Filter>Rendering\Pipeline System\Parameter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

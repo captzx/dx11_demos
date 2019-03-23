@@ -19,8 +19,8 @@
 using namespace insight;
 
 RenderingPipeline::RenderingPipeline() {
-	ProgrammableStage[VERTEX_SHADER] = &VertexShaderStage;
-	ProgrammableStage[PIXEL_SHADER] = &PixelShaderStage;
+	apProgrammableStages[VERTEX_SHADER] = &VertexShaderStage;
+	apProgrammableStages[PIXEL_SHADER] = &PixelShaderStage;
 }
 
 RenderingPipeline::~RenderingPipeline() {
@@ -90,7 +90,7 @@ void RenderingPipeline::BindConstantBufferParameter(ShaderType type, RenderParam
 					pBuffer = (ID3D11Buffer*)pResource->GetResource();
 				}
 
-				ProgrammableStage[type]->DesiredState.ConstantBuffers.Set(slot, pBuffer);
+				apProgrammableStages[type]->DesiredState.ConstantBuffers.Set(slot, pBuffer);
 			}
 			else {
 				//Log::Get().Write(L"Tried to set an invalid constant buffer ID!");
@@ -181,7 +181,7 @@ void RenderingPipeline::BindShader(ShaderType type, int ID, IParameterManager* p
 	Renderer* pRenderer = Renderer::Get();
 	Shader* pShader = pRenderer->GetShader(ID);
 
-	ProgrammableStage[type]->DesiredState.ShaderProgram.Set(ID);
+	apProgrammableStages[type]->DesiredState.ShaderProgram.Set(ID);
 
 	if (pShader){
 		if (pShader->GetType() == type){

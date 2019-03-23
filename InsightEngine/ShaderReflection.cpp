@@ -1,15 +1,17 @@
 #include "pch.h"
 #include "ShaderReflection.h"
 
-#include "Shader.h"
+#include "Renderer.h"
 #include "RenderingPipeline.h"
 
-#include "Renderer.h"
+#include "Shader.h"
+
 #include "ParameterManager.h"
 #include "RenderParameter.h"
-#include "PipeBufferDesc.h"
 
 #include "PipeBuffer.h"
+#include "PipeBufferDesc.h"
+
 
 using namespace insight;
 
@@ -20,7 +22,7 @@ ShaderReflection::~ShaderReflection() {}
 void ShaderReflection::InitializeConstantBuffers(IParameterManager* pParameterManager) {
 	for (size_t i = 0; i < ConstantBuffers.size(); ++i) {
 		if (ConstantBuffers[i].Description.Type == D3D11_CT_CBUFFER) {
-			int index = pParameterManager->GetConstantBufferParameter(ConstantBuffers[i].pParamRef);
+			int index = pParameterManager->GetConstantBufferParameter(ConstantBuffers[i].pParameterRef);
 
 			if (index == -1) {
 				for (int thread = 0; thread <= NUM_THREADS; ++thread) {
@@ -30,17 +32,17 @@ void ShaderReflection::InitializeConstantBuffers(IParameterManager* pParameterMa
 					std::shared_ptr<PipeResourceProxy> pResource = Renderer::Get()->CreateConstantBuffer(&cbufferDesc, nullptr);
 					index = pResource->_iResource;
 
-					ConstantBuffers[i].pParamRef->SetParameterData(&index, thread);
+					ConstantBuffers[i].pParameterRef->SetParameterData(&index, thread);
 
 					for (size_t j = 0; j < ConstantBuffers[i].Variables.size(); ++j) {
 						ConstantBufferMapping mapping;
 
 						mapping.pParameter = ConstantBuffers[i].Parameters[j];
-						mapping.offset = ConstantBuffers[i].Variables[j].StartOffset;
-						mapping.size = ConstantBuffers[i].Variables[j].Size;
-						mapping.elements = ConstantBuffers[i].Types[j].Elements;
-						mapping.varclass = ConstantBuffers[i].Types[j].Class;
-						mapping.valueID = -1;
+						mapping.Offset = ConstantBuffers[i].Variables[j].StartOffset;
+						mapping.Size = ConstantBuffers[i].Variables[j].Size;
+						mapping.Elements = ConstantBuffers[i].Types[j].Elements;
+						mapping.VariableClass = ConstantBuffers[i].Types[j].Class;
+						mapping.ValueID = -1;
 
 						ConstantBuffer* pConstantBuffer = Renderer::Get()->GetConstantBufferByIndex(pResource->_iResource);
 						pConstantBuffer->AddMapping(mapping);
@@ -55,11 +57,11 @@ void ShaderReflection::InitializeConstantBuffers(IParameterManager* pParameterMa
 						ConstantBufferMapping mapping;
 
 						mapping.pParameter = ConstantBuffers[i].Parameters[j];
-						mapping.offset = ConstantBuffers[i].Variables[j].StartOffset;
-						mapping.size = ConstantBuffers[i].Variables[j].Size;
-						mapping.elements = ConstantBuffers[i].Types[j].Elements;
-						mapping.varclass = ConstantBuffers[i].Types[j].Class;
-						mapping.valueID = -1;
+						mapping.Offset = ConstantBuffers[i].Variables[j].StartOffset;
+						mapping.Size = ConstantBuffers[i].Variables[j].Size;
+						mapping.Elements = ConstantBuffers[i].Types[j].Elements;
+						mapping.VariableClass = ConstantBuffers[i].Types[j].Class;
+						mapping.ValueID = -1;
 
 						if (!pConstantBuffer->ContainsMapping(i, mapping)) {
 							// ...
@@ -70,8 +72,8 @@ void ShaderReflection::InitializeConstantBuffers(IParameterManager* pParameterMa
 		}
 	}
 }
-void ShaderReflection::UpdateParameters(RenderingPipeline* pImmPipeline, IParameterManager* pParameterManager) {}
-void ShaderReflection::BindParameters(ShaderType type, RenderingPipeline* pImmPipeline, IParameterManager* pParameterManager) {
+void ShaderReflection::UpdateParameters(RenderingPipeline* pPipeline, IParameterManager* pParameterManager) {}
+void ShaderReflection::BindParameters(ShaderType type, RenderingPipeline* pPipeline, IParameterManager* pParameterManager) {
 	for (unsigned int i = 0; i < ResourceBindings.size(); ++i) {
 		unsigned int slot = ResourceBindings[i].BindPoint;
 
@@ -79,16 +81,12 @@ void ShaderReflection::BindParameters(ShaderType type, RenderingPipeline* pImmPi
 		{
 		case D3D_SIT_CBUFFER:
 		case D3D_SIT_TBUFFER:
-			pImmPipeline->BindConstantBufferParameter(type, ResourceBindings[i].pParamRef, slot, pParameterManager);
+			pPipeline->BindConstantBufferParameter(type, ResourceBindings[i].pParameterRef, slot, pParameterManager);
 			break;
 		default:
 			break;
 		}
 	}
-}
-
-void ShaderReflection::PrintShaderDetails() {
-
 }
 
 void ShaderReflection::SetName(const std::wstring& name) {
@@ -139,7 +137,7 @@ ShaderReflection* ShaderReflectionFactory::GenerateReflection(Shader& shader) {
 		if (bufferDesc.Type == D3D_CT_CBUFFER || bufferDesc.Type == D3D_CT_TBUFFER) {
 			ConstantBufferLayout bufferLayout;
 			bufferLayout.Description = bufferDesc;
-			bufferLayout.pParamRef = pParameterManager->GetConstantBufferParameterRef(ToUnicode(std::string(bufferLayout.Description.Name)));
+			bufferLayout.pParameterRef = pParameterManager->GetConstantBufferParameterRef(ToUnicode(std::string(bufferLayout.Description.Name)));
 			
 			for (size_t j = 0; j < bufferLayout.Description.Variables; ++j) {
 				ID3D11ShaderReflectionVariable* pVariable = pConstantBuffer->GetVariableByIndex(j);
@@ -183,7 +181,7 @@ ShaderReflection* ShaderReflectionFactory::GenerateReflection(Shader& shader) {
 		ShaderInputBindDesc bindDesc(resourceDesc);
 		
 		if (resourceDesc.Type == D3D_SIT_CBUFFER || resourceDesc.Type == D3D_SIT_TBUFFER) {
-			bindDesc.pParamRef = pParameterManager->GetConstantBufferParameterRef(bindDesc.Name);
+			bindDesc.pParameterRef = pParameterManager->GetConstantBufferParameterRef(bindDesc.Name);
 		}
 		else {
 			/// ...

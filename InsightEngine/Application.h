@@ -24,6 +24,6 @@ namespace insight {
 		LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) override;
 
 	protected:
-		static Application* _spApplication;
+		static Application* spApplication;
 	};
 }

@@ -10,33 +10,33 @@ namespace insight {
 		ID3D11Resource* GetResource() override { return _pBuffer.Get(); }
 
 		D3D11_BUFFER_DESC GetActualDescription();
-		D3D11_BUFFER_DESC GetDesiredDescription() { return _DesiredDesc; }
-		void SetDesiredDescription(const D3D11_BUFFER_DESC& desc) { _DesiredDesc = desc; }
+		D3D11_BUFFER_DESC GetDesiredDescription() { return _desiredDesc; }
+		void SetDesiredDescription(const D3D11_BUFFER_DESC& desc) { _desiredDesc = desc; }
 
 		UINT GetByteWidth();
-		void SetByteWidth(UINT ByteWidth) { _DesiredDesc.ByteWidth = ByteWidth; }
+		void SetByteWidth(UINT ByteWidth) { _desiredDesc.ByteWidth = ByteWidth; }
 
 		D3D11_USAGE GetUsage();
-		void SetUsage(D3D11_USAGE Usage) { _DesiredDesc.Usage = Usage; }
+		void SetUsage(D3D11_USAGE Usage) { _desiredDesc.Usage = Usage; }
 			 
 		UINT GetBindFlags();
-		void SetBindFlags(UINT BindFlags) { _DesiredDesc.BindFlags = BindFlags; }
+		void SetBindFlags(UINT BindFlags) { _desiredDesc.BindFlags = BindFlags; }
 			 
 		UINT GetCPUAccessFlags();
-		void SetCPUAccessFlags(UINT CPUAccessFlags) { _DesiredDesc.CPUAccessFlags = CPUAccessFlags; }
+		void SetCPUAccessFlags(UINT CPUAccessFlags) { _desiredDesc.CPUAccessFlags = CPUAccessFlags; }
 			 
 		UINT GetMiscFlags();
-		void SetMiscFlags(UINT MiscFlags) { _DesiredDesc.MiscFlags = MiscFlags; }
+		void SetMiscFlags(UINT MiscFlags) { _desiredDesc.MiscFlags = MiscFlags; }
 			 
 		UINT GetStructureByteStride();
-		void SetStructureByteStride(UINT StructureByteStride) { _DesiredDesc.StructureByteStride = StructureByteStride; }
+		void SetStructureByteStride(UINT StructureByteStride) { _desiredDesc.StructureByteStride = StructureByteStride; }
 			 
 		void *Map() { return nullptr; }
 		void UnMap() {}
 	protected:
 		ComPtr<ID3D11Buffer> _pBuffer;
-		D3D11_BUFFER_DESC _DesiredDesc;
-		D3D11_BUFFER_DESC _ActualDesc;
+		D3D11_BUFFER_DESC _desiredDesc;
+		D3D11_BUFFER_DESC _actualDesc;
 	};
 
 	class VertexBuffer : public PipeBuffer{
@@ -73,11 +73,11 @@ namespace insight {
 	class RenderParameter;
 	struct ConstantBufferMapping{
 		RenderParameter* pParameter;
-		unsigned int offset;
-		unsigned int size;
-		D3D_SHADER_VARIABLE_CLASS varclass;
-		unsigned int elements;
-		unsigned int valueID;
+		unsigned int Offset;
+		unsigned int Size;
+		D3D_SHADER_VARIABLE_CLASS VariableClass;
+		unsigned int Elements;
+		unsigned int ValueID;
 	};
 
 	class IParameterManager;
@@ -100,6 +100,6 @@ namespace insight {
 
 	protected:
 		bool _bAutoUpdate;
-		std::vector<ConstantBufferMapping> _Mappings;
+		std::vector<ConstantBufferMapping> _vConstantBufferMappings;
 	};
 }

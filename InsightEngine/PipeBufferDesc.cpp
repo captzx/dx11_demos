@@ -4,48 +4,48 @@
 using namespace insight;
 
 void PipeBufferDesc::SetDefault() {
-	_bd.ByteWidth = NULL;
-	_bd.BindFlags = NULL;
-	_bd.Usage = D3D11_USAGE_DEFAULT;
-	_bd.CPUAccessFlags = NULL;
-	_bd.MiscFlags = NULL;
-	_bd.StructureByteStride = NULL;
+	_bufferDesc.ByteWidth = NULL;
+	_bufferDesc.BindFlags = NULL;
+	_bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	_bufferDesc.CPUAccessFlags = NULL;
+	_bufferDesc.MiscFlags = NULL;
+	_bufferDesc.StructureByteStride = NULL;
 }
 
 void PipeBufferDesc::SetAsVertexBuffer(UINT byteWidth, bool isDynamic) {
-	_bd.ByteWidth = byteWidth;
-	_bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	_bufferDesc.ByteWidth = byteWidth;
+	_bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	if (isDynamic) {
-		_bd.Usage = D3D11_USAGE_DYNAMIC;
-		_bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		_bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+		_bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	}
 	else {
-		_bd.Usage = D3D11_USAGE_IMMUTABLE;
-		_bd.CPUAccessFlags = 0;
+		_bufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
+		_bufferDesc.CPUAccessFlags = 0;
 	}
 }
 void PipeBufferDesc::SetAsIndexBuffer(UINT byteWidth, bool isDynamic) {
-	_bd.ByteWidth = byteWidth;
-	_bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	_bufferDesc.ByteWidth = byteWidth;
+	_bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	if (isDynamic) {
-		_bd.Usage = D3D11_USAGE_DYNAMIC;
-		_bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		_bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+		_bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	}
 	else {
-		_bd.Usage = D3D11_USAGE_IMMUTABLE;
-		_bd.CPUAccessFlags = 0;
+		_bufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
+		_bufferDesc.CPUAccessFlags = 0;
 	}
 }
 void PipeBufferDesc::SetAsConstantBuffer(UINT byteWidth, bool isDynamic) {
-	_bd.ByteWidth = byteWidth;
-	_bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	_bufferDesc.ByteWidth = byteWidth;
+	_bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 
 	if (isDynamic){
-		_bd.Usage = D3D11_USAGE_DYNAMIC;
-		_bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		_bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+		_bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	}
 	else {
-		_bd.Usage = D3D11_USAGE_IMMUTABLE;
-		_bd.CPUAccessFlags = 0;
+		_bufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
+		_bufferDesc.CPUAccessFlags = 0;
 	}
 }

@@ -53,7 +53,7 @@ int OutputMergerState::GetRenderTargetCount() const {
 
 
 OutputMergerStage::OutputMergerStage() {
-	DesiredState.SetDesiredState(&CurrentState);
+	DesiredState.SetDesiredState(&_currentState);
 }
 OutputMergerStage::~OutputMergerStage() {
 
@@ -62,7 +62,7 @@ void OutputMergerStage::ClearDesiredState() {
 	DesiredState.ClearState();
 }
 void OutputMergerStage::ClearCurrentState() {
-	CurrentState.ClearState();
+	_currentState.ClearState();
 }
 void OutputMergerStage::ApplyDesiredRenderTargetStates(ID3D11DeviceContext* pContext) {
 	int rtvCount = 0;
@@ -96,11 +96,11 @@ void OutputMergerStage::ApplyDesiredRenderTargetStates(ID3D11DeviceContext* pCon
 		// TODO: Find a better way to copy the state from desired to current...
 
 		for (int i = 0; i < D3D11_SIMULTANEOUS_RENDER_TARGET_COUNT; i++) {
-			CurrentState.RenderTargetViews.Set(i, DesiredState.RenderTargetViews.Get(i));
+			_currentState.RenderTargetViews.Set(i, DesiredState.RenderTargetViews.Get(i));
 		}
 
 
-		CurrentState.DepthTargetViews.Set(DesiredState.DepthTargetViews.Get());
+		_currentState.DepthTargetViews.Set(DesiredState.DepthTargetViews.Get());
 
 		DesiredState.RenderTargetViews.Reset();
 		
@@ -116,5 +116,5 @@ void OutputMergerStage::ApplyDesiredState(ID3D11DeviceContext* pContext) {
 }
 
 const OutputMergerState& OutputMergerStage::GetCurrentState() const {
-	return CurrentState;
+	return _currentState;
 }

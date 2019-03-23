@@ -1,14 +1,15 @@
 #pragma once
 #include "Application.h"
-#include "PipeResourceProxy.h"
 
 namespace insight {
 	class RenderEffect;
 	class Renderer;
 	class Window;
-
-	struct VSConstBuffer;
+	class PipeResourceProxy;
 	class EmptyApp: public Application {
+	public:
+		EmptyApp() {}
+		virtual ~EmptyApp() {}
 	public:
 		virtual bool ConfigureEngineComponent() override;
 		virtual void Initialize()override;
@@ -21,15 +22,9 @@ namespace insight {
 		Window* _pWindow = nullptr;
 		Renderer* _pRenderer = nullptr;
 
-		int	_iSwapChain;
 		std::shared_ptr<PipeResourceProxy> _pRenderTargetView;
 		std::shared_ptr<PipeResourceProxy> _pDepthStencilView;
-		RenderEffect* _pEffect;
-		int _iVertexLayout;
-		std::shared_ptr<PipeResourceProxy> _pVertexBuffer;
-		std::shared_ptr<PipeResourceProxy> _pIndexBuffer;
-		std::shared_ptr<PipeResourceProxy> _pConstantBuffer;
 
-		VSConstBuffer* _pVSConstBuffer;
+		int	_iSwapChain;
 	};
 }

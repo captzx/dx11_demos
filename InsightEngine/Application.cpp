@@ -3,10 +3,10 @@
 
 using namespace insight;
 
-Application* Application::_spApplication = nullptr;
+Application* Application::spApplication = nullptr;
 
 Application::Application() {
-	_spApplication = this;
+	spApplication = this;
 }
 
 Application::~Application() {
@@ -14,7 +14,7 @@ Application::~Application() {
 }
 
 Application* Application::Get() {
-	return _spApplication;
+	return spApplication;
 }
 
 void Application::MessageLoop() {

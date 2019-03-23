@@ -31,18 +31,18 @@ bool EmptyApp::ConfigureEngineComponent() {
 	_pRenderer = new Renderer();
 	_pRenderer->Initialize(D3D_DRIVER_TYPE_HARDWARE, D3D_FEATURE_LEVEL_11_0);
 
-	SwapChainDesc SCDesc;
-	SCDesc.SetOutputWindow(_pWindow->GetHandle());
-	SCDesc.SetHeight(height);
-	SCDesc.SetWidth(width);
-	_iSwapChain = _pRenderer->CreateSwapChain(SCDesc);
+	SwapChainDesc swapChainDesc;
+	swapChainDesc.SetOutputWindow(_pWindow->GetHandle());
+	swapChainDesc.SetHeight(height);
+	swapChainDesc.SetWidth(width);
+	_iSwapChain = _pRenderer->CreateSwapChain(swapChainDesc);
 	_pWindow->SetSwapChain(_iSwapChain);
 
 	_pRenderTargetView = _pRenderer->GetSwapChainResource(_iSwapChain);
 
-	Texture2dDesc DepthDesc;
-	DepthDesc.SetDepthBuffer(width, height);
-	_pDepthStencilView = _pRenderer->CreateTexture2D(&DepthDesc, 0);
+	Texture2dDesc depthStencilDesc;
+	depthStencilDesc.SetDepthBuffer(width, height);
+	_pDepthStencilView = _pRenderer->CreateTexture2D(&depthStencilDesc, 0);
 
 
 	_pRenderer->GetPipeline()->OutputMergerStage.ClearDesiredState();
@@ -50,99 +50,39 @@ bool EmptyApp::ConfigureEngineComponent() {
 	_pRenderer->GetPipeline()->OutputMergerStage.DesiredState.DepthTargetViews.Set(_pDepthStencilView->_iResourceDSV);
 	_pRenderer->GetPipeline()->ApplyRenderTargets();
 
-	_pEffect = new RenderEffect();
-	_pEffect->SetVertexShader(_pRenderer->LoadShader(VERTEX_SHADER, L"..//CommonData//Shaders//Triangle.hlsl", "VS", "vs_5_0"));
-	_pEffect->SetPixelShader(_pRenderer->LoadShader(PIXEL_SHADER, L"..//CommonData//Shaders//Triangle.hlsl", "PS", "ps_5_0"));
 
-	D3D11_INPUT_ELEMENT_DESC vertexDesc[] = {
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0}
-	};
-	std::vector<D3D11_INPUT_ELEMENT_DESC> layout;
-	layout.push_back(vertexDesc[0]);
-	layout.push_back(vertexDesc[1]);
-	_iVertexLayout = _pRenderer->CreateInputLayout(layout, _pEffect->GetVertexShader());
-	if (_iVertexLayout == -1) {
-		assert(false);
-	}
+	D3D11_VIEWPORT viewPort;
+	viewPort.Width = static_cast<float>(800);
+	viewPort.Height = static_cast<float>(600);
+	viewPort.MinDepth = 0.0f;
+	viewPort.MaxDepth = 1.0f;
+	viewPort.TopLeftX = 0;
+	viewPort.TopLeftY = 0;
 
-	D3D11_VIEWPORT viewport;
-	viewport.Width = static_cast<float>(800);
-	viewport.Height = static_cast<float>(600);
-	viewport.MinDepth = 0.0f;
-	viewport.MaxDepth = 1.0f;
-	viewport.TopLeftX = 0;
-	viewport.TopLeftY = 0;
-
-	int ViewPort = _pRenderer->CreateViewPort(viewport);
+	int iViewPort = _pRenderer->CreateViewPort(viewPort);
 	_pRenderer->GetPipeline()->RasterizerStage.DesiredState.ViewportCount.Set(1);
-	_pRenderer->GetPipeline()->RasterizerStage.DesiredState.Viewports.Set(0, ViewPort);
+	_pRenderer->GetPipeline()->RasterizerStage.DesiredState.Viewports.Set(0, iViewPort);
 
 	return true;
 }
 void EmptyApp::Initialize() {
 	_pWindow->SetCaption(GetName());
-
-	{
-		Vertex_Pos_Color vertices[] =
-		{
-			{ XMFLOAT3(0.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },
-			{ XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
-			{ XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) }
-		};
-		D3D11_SUBRESOURCE_DATA vd;
-		vd.pSysMem = vertices;
-
-		PipeBufferDesc vbd;
-		vbd.SetAsVertexBuffer(3 * sizeof(Vertex_Pos_Color));
-		_pVertexBuffer = _pRenderer->CreateVertexBuffer(&vbd, &vd);
-	}
-
-	{
-
-		UINT indices[] =
-		{
-			0,1,2
-		};
-		D3D11_SUBRESOURCE_DATA data;
-		data.pSysMem = indices;
-		data.SysMemPitch = 0;
-		data.SysMemSlicePitch = 0;
-
-		PipeBufferDesc ibd;
-		ibd.SetAsIndexBuffer(sizeof(UINT) * 3, false);
-		_pIndexBuffer = _pRenderer->CreateIndexBuffer(&ibd, &data);
-	}
-
-	if (!_pVSConstBuffer) _pVSConstBuffer = new VSConstBuffer();
-	XMStoreFloat4x4(&_pVSConstBuffer->world, XMMatrixIdentity());
-	XMVECTOR pos = XMVectorSet(0.0f, 0.0f, -1.0f, 1.0f);
-	XMVECTOR target = XMVectorZero();
-	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
-	XMStoreFloat4x4(&_pVSConstBuffer->view, XMMatrixTranspose(XMMatrixLookAtLH(pos, target, up)));
-	XMStoreFloat4x4(&_pVSConstBuffer->proj, XMMatrixTranspose(XMMatrixPerspectiveFovLH(XM_PIDIV2, 800.0f / 600, 1.0f, 1000.0f)));
-
-	_pRenderer->GetParameterManager()->SetWorldMatrixParameter(&_pVSConstBuffer->world);
-	_pRenderer->GetParameterManager()->SetViewMatrixParameter(&_pVSConstBuffer->view);
-	_pRenderer->GetParameterManager()->SetProjMatrixParameter(&_pVSConstBuffer->proj);
 }
 
 void EmptyApp::Update() {
 	_pRenderer->GetPipeline()->ClearColorBuffers(Colors::AliceBlue);
 	_pRenderer->GetPipeline()->ClearDepthStencilBuffers();
 	
-	UINT stride = sizeof(Vertex_Pos_Color);
-	_pRenderer->GetPipeline()->Draw(_pEffect, _pVertexBuffer, _pIndexBuffer,_iVertexLayout, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST, stride, 3, _pRenderer->GetParameterManager());
 	_pRenderer->Present(_pWindow->GetHandle(), _pWindow->GetSwapChain());
 }
 
 void EmptyApp::Shutdown() {
+
 }
+
 void EmptyApp::ShutdownEngineComponent() {
 	SAFE_DELETE(_pWindow);
 	SAFE_DELETE(_pRenderer);
-	SAFE_DELETE(_pEffect);
 }
 
 std::wstring EmptyApp::GetName() {
