@@ -1,15 +1,10 @@
 #pragma once
 #include "Tools.h"
+
 namespace insight {
-	enum ShaderType;
-	enum ShaderMask;
-	class IParameterManager;
 	class RenderParameter;
-	class RenderingPipeline;
-	struct ShaderInputBindDesc
-	{
-		ShaderInputBindDesc(D3D11_SHADER_INPUT_BIND_DESC desc)
-		{
+	struct ShaderInputBindDesc{
+		ShaderInputBindDesc(D3D11_SHADER_INPUT_BIND_DESC desc){
 			Name = std::wstring(ToUnicode(std::string(desc.Name)));
 			Type = desc.Type;
 			BindPoint = desc.BindPoint;
@@ -21,8 +16,7 @@ namespace insight {
 			pParamRef = 0;
 		};
 
-		ShaderInputBindDesc()
-		{
+		ShaderInputBindDesc(){
 			Name = std::wstring(L"");
 			Type = D3D_SIT_CBUFFER;
 			BindPoint = 0;
@@ -45,8 +39,7 @@ namespace insight {
 		RenderParameter* pParamRef;
 	};
 
-	struct ConstantBufferLayout
-	{
+	struct ConstantBufferLayout{
 		D3D11_SHADER_BUFFER_DESC				Description;
 		std::vector<D3D11_SHADER_VARIABLE_DESC>	Variables;
 		std::vector<D3D11_SHADER_TYPE_DESC>		Types;
@@ -54,23 +47,18 @@ namespace insight {
 		RenderParameter*					pParamRef;
 	};
 
-	struct ConstantBufferMapping{
-		RenderParameter*		pParameter;
-		unsigned int				offset;
-		unsigned int				size;
-		D3D_SHADER_VARIABLE_CLASS	varclass;
-		unsigned int				elements;
-		unsigned int				valueID;
-	};
-
+	class IParameterManager;
+	class RenderingPipeline;
+	enum ShaderType;
 	class ShaderReflection {
 	public:
 		ShaderReflection();
 		~ShaderReflection();
 
-		void InitializeConstantBuffers(IParameterManager* pParamManager);
-		void UpdateParameters(RenderingPipeline* pPipeline, IParameterManager* pParamManager);
-		void BindParameters(ShaderType type, RenderingPipeline* pPipeline, IParameterManager* pParamManager);
+	public:
+		void InitializeConstantBuffers(IParameterManager* pParameterManager);
+		void UpdateParameters(RenderingPipeline* pImmPipeline, IParameterManager* pParameterManager);
+		void BindParameters(ShaderType type, RenderingPipeline* pImmPipeline, IParameterManager* pParameterManager);
 
 		void PrintShaderDetails();
 
@@ -78,7 +66,7 @@ namespace insight {
 		std::wstring GetName();
 
 	public:
-		std::wstring									Name;
+		std::wstring Name;
 		D3D11_SHADER_DESC								ShaderDescription;
 		std::vector<D3D11_SIGNATURE_PARAMETER_DESC>		InputSignatureParameters;
 		std::vector<D3D11_SIGNATURE_PARAMETER_DESC>		OutputSignatureParameters;
@@ -89,9 +77,11 @@ namespace insight {
 	class Shader;
 	class ShaderReflectionFactory {
 	public:
-		ShaderReflectionFactory();
-		~ShaderReflectionFactory();
+		~ShaderReflectionFactory() {}
+	private:
+		ShaderReflectionFactory() {}
 
-		ShaderReflection* GenerateReflection(Shader& shader);
+	public:
+		static ShaderReflection* GenerateReflection(Shader& shader);
 	};
 }

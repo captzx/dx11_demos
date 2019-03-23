@@ -91,14 +91,16 @@ void RotatingCubeApp::Initialize() {
 	{
 		Vertex vertices[] =
 		{
-			{XMFLOAT3(-0.5f, 0.5f, 0.1f),	XMFLOAT4(Colors::Beige)},
-			{XMFLOAT3(0.5f, 0.5f,0.1f),	XMFLOAT4(Colors::Beige) },
-			{XMFLOAT3(0.5f, 0.5f, 0.5f),	XMFLOAT4(Colors::Beige) },
-			{XMFLOAT3(-0.5f, 0.5f, 0.5f),	XMFLOAT4(Colors::Beige) },
-			{XMFLOAT3(-0.5f, -0.5f, 0.1f), XMFLOAT4(Colors::Beige) },
-			{XMFLOAT3(0.5f, -0.5f, 0.1f),	XMFLOAT4(Colors::Beige) },
-			{XMFLOAT3(0.5f, -0.5f, 0.5f),	XMFLOAT4(Colors::Beige) },
-			{XMFLOAT3(-0.5f, -0.5f, 0.5f),	XMFLOAT4(Colors::Beige) },
+
+
+			{XMFLOAT3(-1.0f, -1.0f, -1.0f),	XMFLOAT4(Colors::Blue)},
+			{XMFLOAT3(-1.0f, +1.0f, -1.0f),	XMFLOAT4(Colors::White) },
+			{XMFLOAT3(+1.0f, +1.0f, -1.0f),	XMFLOAT4(Colors::Green) },
+			{ XMFLOAT3(+1.0f, -1.0f, -1.0f),	XMFLOAT4(Colors::Black) },
+			{XMFLOAT3(-1.0f, -1.0f, +1.0f), XMFLOAT4(Colors::Yellow) },
+			{XMFLOAT3(-1.0f, +1.0f, +1.0f),	XMFLOAT4(Colors::Crimson) },
+			{XMFLOAT3(+1.0f, +1.0f, +1.0f),	XMFLOAT4(Colors::BlanchedAlmond) },
+			{XMFLOAT3(+1.0f, -1.0f, +1.0f),	XMFLOAT4(Colors::BlueViolet) },
 		};
 		D3D11_SUBRESOURCE_DATA vd;
 		vd.pSysMem = vertices;
@@ -109,23 +111,28 @@ void RotatingCubeApp::Initialize() {
 
 		UINT indices[] =
 		{
-			3,1,0,
-			2,1,3,
+			0, 1, 2,
+			0, 2, 3,
 
-			0,5,4,
-			1,5,0,
+			// back face
+			4, 6, 5,
+			4, 7, 6,
 
-			3,4,7,
-			0,4,3,
+			// left face
+			4, 5, 1,
+			4, 1, 0,
 
-			1,6,5,
-			2,6,1,
+			// right face
+			3, 2, 6,
+			3, 6, 7,
 
-			2,7,6,
-			3,7,2,
+			// top face
+			1, 5, 6,
+			1, 6, 2,
 
-			6,4,5,
-			7,4,6,
+			// bottom face
+			4, 0, 3,
+			4, 3, 7
 		};
 		D3D11_SUBRESOURCE_DATA id;
 		id.pSysMem = indices;
@@ -135,18 +142,29 @@ void RotatingCubeApp::Initialize() {
 		_pIndexBuffer = _pRenderer->CreateIndexBuffer(&ibd, &id);
 	}
 
-	auto world = XMMatrixIdentity();
+	cb.w = XMMatrixIdentity();
+	XMVECTOR pos = XMVectorSet(0.0f, 0.0f, -5.0f, 1.0f);
+	XMVECTOR target = XMVectorZero();
+	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
-	XMVECTOR Eye = XMVectorSet(0.0f, 0.0f, -10.0f, 0.0f);
-	XMVECTOR At = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-	XMVECTOR Up = XMVectorSet(0.0f, 0.5f, 0.0f, 0.0f);
-	auto view = XMMatrixLookAtLH(Eye, At, Up);
+	cb.v = XMMatrixTranspose(XMMatrixLookAtLH(pos, target, up));
+	cb.p = XMMatrixTranspose(XMMatrixPerspectiveFovLH(XM_PIDIV4, 800 / 600, 1.0f, 1000.0f));
 
-	auto proj = XMMatrixTranspose(XMMatrixPerspectiveFovLH(XM_PIDIV2, (FLOAT)_pWindow->GetWidth() / (FLOAT)_pWindow->GetHeight(), 0.01f, 10000.0f));
+	D3D11_SUBRESOURCE_DATA sdcb;
+	sdcb.pSysMem = &cb;
+
+	PipeBufferDesc cbd;
+	cbd.SetAsConstantBuffer(sizeof(CB), true);
+	_pConstantBuffer = _pRenderer->CreateConstantBuffer(&cbd, &sdcb);
+
+	auto pcb = _pRenderer->GetConstantBufferByIndex(_pConstantBuffer->_iResource);
+	_pRenderer->GetPipeline()->MapResource(pcb, 0, D3D11_MAP_WRITE_DISCARD, 0);
+
 }
 void RotatingCubeApp::Update() {
 	_pRenderer->GetPipeline()->ClearColorBuffers(Colors::AliceBlue);
 	_pRenderer->GetPipeline()->ClearDepthStencilBuffers();
+
 
 	UINT stride = sizeof(Vertex);
 	_pRenderer->GetPipeline()->Draw(_pEffect, _pVertexBuffer, _pIndexBuffer, _iVertexLayout, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST, stride, 36);

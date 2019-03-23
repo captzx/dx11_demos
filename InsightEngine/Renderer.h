@@ -15,6 +15,8 @@ namespace insight {
 	class ViewPort;
 	class VertexBuffer;
 	class IndexBuffer;
+	class ConstantBuffer;
+	class IParameterManager;
 	class Renderer {
 	public:
 		Renderer();
@@ -27,7 +29,7 @@ namespace insight {
 
 		int CreateSwapChain(const SwapChainDesc& swapChainDesc);
 
-		ResourcePtr CreateTexture2D(Texture2dDesc* pConfig, D3D11_SUBRESOURCE_DATA* pData,
+		std::shared_ptr<PipeResourceProxy> CreateTexture2D(Texture2dDesc* pConfig, D3D11_SUBRESOURCE_DATA* pData,
 			ShaderResourceViewDesc* pSRVConfig = nullptr,
 			RenderTargetViewDesc* pRTVConfig = nullptr,
 			UnorderedAccessViewDesc* pUAVConfig = nullptr,
@@ -39,19 +41,18 @@ namespace insight {
 		int CreateInputLayout(std::vector<D3D11_INPUT_ELEMENT_DESC>& elements, int ShaderID);
 		int LoadShader(ShaderType type, LPCWSTR fileName, _In_ LPCSTR entryName, _In_ LPCSTR targetName);
 
-		ResourcePtr CreateVertexBuffer(PipeBufferDesc* pConfig, D3D11_SUBRESOURCE_DATA* pData);
-		ResourcePtr CreateIndexBuffer(PipeBufferDesc* pConfig, D3D11_SUBRESOURCE_DATA* pData);
-		ResourcePtr CreateConstantBuffer(PipeBufferDesc* pConfig, D3D11_SUBRESOURCE_DATA* pData, bool bAutoUpdate = true);
+		std::shared_ptr<PipeResourceProxy> CreateVertexBuffer(PipeBufferDesc* pConfig, D3D11_SUBRESOURCE_DATA* pData);
+		std::shared_ptr<PipeResourceProxy> CreateIndexBuffer(PipeBufferDesc* pConfig, D3D11_SUBRESOURCE_DATA* pData);
+		std::shared_ptr<PipeResourceProxy> CreateConstantBuffer(PipeBufferDesc* pConfig, D3D11_SUBRESOURCE_DATA* pData, bool bAutoUpdate = true);
 
 		int CreateViewPort(D3D11_VIEWPORT viewport);
 
 		void Present(HWND hWnd = 0, int SwapChain = -1, UINT SyncInterval = 0, UINT PresentFlags = 0);
 	public:
-		void BindConstantBufferParameter(ShaderType type, RenderParameter* pParam, UINT slot,IParameterManager* pParamManager);
-	public:
+		PipeResource* GetResourceByIndex(int rid);
 		Texture2D* GetTexture2DByIndex(int rid);
 
-		ResourcePtr GetSwapChainResource(int ID);
+		std::shared_ptr<PipeResourceProxy> GetSwapChainResource(int ID);
 
 		VertexBuffer* GetVertexBufferByIndex(int rid);
 		IndexBuffer* GetIndexBufferByIndex(int rid);
@@ -65,7 +66,8 @@ namespace insight {
 		Shader* GetShader(size_t);
 		const ViewPort& GetViewPort(int ID);
 
-		RenderingPipeline* GetPipeline()const { return _pImmPipeline; }
+		RenderingPipeline* GetPipeline() const { return _pImmPipeline; }
+		IParameterManager* GetParameterManager() const { return _pParameterManager; }
 	protected:
 		int	_GetUnusedResourceIndex();
 		int	_StoreNewResource(PipeResource* pResource);
@@ -73,8 +75,9 @@ namespace insight {
 	protected:
 		static Renderer* _spRenderer;
 
-		ComPtr<ID3D11Device> _pDevice = nullptr;
-		RenderingPipeline* _pImmPipeline = nullptr;
+		ComPtr<ID3D11Device> _pDevice;
+		IParameterManager* _pParameterManager;
+		RenderingPipeline* _pImmPipeline;
 
 		std::vector<SwapChain*>	_vSwapChains;
 		std::vector<ViewPort> _vViewPorts;

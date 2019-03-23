@@ -11,6 +11,11 @@
 #include "PipeResource.h"
 #include "ParameterManager.h"
 
+#include "PipeBuffer.h"
+#include "ParameterManager.h"
+#include "RenderParameter.h"
+#include "ShaderReflection.h"
+
 using namespace insight;
 
 RenderingPipeline::RenderingPipeline() {
@@ -67,31 +72,25 @@ void RenderingPipeline::ClearDepthStencilBuffers(float depth, UINT stencil) {
 		}
 	}
 }
-void RenderingPipeline::BindConstantBufferParameter(ShaderType type, RenderParameter* pParam, UINT slot, IParameterManager* pParamManager) {
+void RenderingPipeline::BindConstantBufferParameter(ShaderType type, RenderParameter* pParameter, UINT slot, IParameterManager* pParamManager) {
 	Renderer* pRenderer = Renderer::Get();
+	unsigned int threadID = pParamManager->GetID();
 
-	unsigned int tID = pParamManager->GetID();
+	if (pParameter) {
+		if (pParameter->GetParameterType() == CBUFFER) {
+			ConstantBufferParameter* pConstantBufferParameter = reinterpret_cast<ConstantBufferParameter*>(pParameter);
+			int resrouceIndex = pConstantBufferParameter->GetResourceIndex(threadID);
 
-	if (pParam != 0) {
+			PipeResource* pResource = pRenderer->GetResourceByIndex(resrouceIndex);
 
-		// Check the type of the parameter
-		if (pParam->GetParameterType() == CBUFFER) {
-			ConstantBufferParameter* pBuffer = reinterpret_cast<ConstantBufferParameter*>(pParam);
-			int ID = pBuffer->GetIndex(tID);
-
-			PipeResource* pResource = pRenderer->GetResourceByIndex(ID);
-
-			// Allow a range including -1 up to the number of resources
-			if (pResource || (ID == -1)) {
-				// Get the resource to be set, and pass it in to the desired shader type
-
+			if (pResource || (resrouceIndex == -1)) {
 				ID3D11Buffer* pBuffer = 0;
 
-				if (ID >= 0) {
+				if (resrouceIndex >= 0) {
 					pBuffer = (ID3D11Buffer*)pResource->GetResource();
 				}
 
-				//ShaderStages[type]->DesiredState.ConstantBuffers.SetState(slot, pBuffer);
+				ProgrammableStage[type]->DesiredState.ConstantBuffers.Set(slot, pBuffer);
 			}
 			else {
 				//Log::Get().Write(L"Tried to set an invalid constant buffer ID!");
@@ -106,18 +105,14 @@ void RenderingPipeline::BindConstantBufferParameter(ShaderType type, RenderParam
 	}
 }
 
-void RenderingPipeline::Draw(RenderEffect* effect, ResourcePtr vb, ResourcePtr ib,
+void RenderingPipeline::Draw(RenderEffect* effect, std::shared_ptr<PipeResourceProxy> vb, std::shared_ptr<PipeResourceProxy> ib,
 	int inputLayout, D3D11_PRIMITIVE_TOPOLOGY primType,
-	UINT vertexStride, UINT numIndices)
+	UINT vertexStride, UINT numIndices, IParameterManager* pParameterManager)
 {
 	InputAssemblerStage.ClearDesiredState();
 
-	// Configure the pipeline input data with the input assembler
-	// state object.
-
 	InputAssemblerStage.DesiredState.PrimitiveTopology.Set(primType);
 
-	// Bind the vertex and index buffers.
 	if (vb != NULL) {
 		InputAssemblerStage.DesiredState.VertexBuffers.Set(0, vb->_iResource);
 		InputAssemblerStage.DesiredState.VertexBufferStrides.Set(0, vertexStride);
@@ -129,42 +124,46 @@ void RenderingPipeline::Draw(RenderEffect* effect, ResourcePtr vb, ResourcePtr i
 		InputAssemblerStage.DesiredState.IndexBufferFormat.Set(DXGI_FORMAT_R32_UINT);
 	}
 
-	// Bind the input layout.
 	if (vb != NULL) {
 		InputAssemblerStage.DesiredState.InputLayout.Set(inputLayout);
 	}
 
-	// Set and apply the state in this pipeline manager's input assembler.
 	InputAssemblerStage.ApplyDesiredState(_pDeviceContext.Get());
 
-	// Use the effect to load all of the pipeline stages here.
 	ClearPipelineResources();
-	effect->ConfigurePipeline(this);
+	effect->ConfigurePipeline(this, pParameterManager);
 	ApplyPipelineResources();
 
 	_pDeviceContext->DrawIndexed(numIndices, 0, 0);
 }
 
+
+void RenderingPipeline::UpdateSubresource(ConstantBuffer* cBuffer, void* pData) {
+	_pDeviceContext->UpdateSubresource(cBuffer->GetResource(), 0, nullptr, &pData, 0, 0);
+}
+
 D3D11_MAPPED_SUBRESOURCE RenderingPipeline::MapResource(PipeResource * pPipeResource, UINT subresource, D3D11_MAP actions, UINT flags){
-	D3D11_MAPPED_SUBRESOURCE msr;
-	msr.pData = nullptr;
-	msr.DepthPitch = 0;
-	msr.RowPitch = 0;
+	D3D11_MAPPED_SUBRESOURCE mappedSubresource;
+	mappedSubresource.pData = NULL;
+	mappedSubresource.DepthPitch = mappedSubresource.RowPitch = 0;
 
-	if (pPipeResource) {
-		ID3D11Resource* pResource = nullptr;
-		pResource = pPipeResource->GetResource();
+	if (!pPipeResource) {
+		return mappedSubresource;
+	}
 
-		if (pResource) {
-			HRESULT hr = _pDeviceContext->Map(pResource, subresource, actions, flags, &msr);
+	ID3D11Resource* pResource = pPipeResource->GetResource();
 
-			if (FAILED(hr)) {
-				
-			}
-		}
+	if (!pResource) {
+		return mappedSubresource;
+	}
+
+	HRESULT hr = _pDeviceContext->Map(pResource, subresource, actions, flags, &mappedSubresource);
+	
+	if (FAILED(hr)) {
+		// ... 
 	}
 	
-	return msr;
+	return mappedSubresource;
 }
 
 void RenderingPipeline::UnMapResource(PipeResource * pPipeResource, UINT subresource){
@@ -173,31 +172,23 @@ void RenderingPipeline::UnMapResource(PipeResource * pPipeResource, UINT subreso
 		pResource = pPipeResource->GetResource();
 
 		if (pResource) {
-			_pDeviceContext->Unmap(pResource, subresource);
+			 _pDeviceContext->Unmap(pResource, subresource);
 		}
 	}
 }
 
-void RenderingPipeline::BindShader(ShaderType type, int ID){
+void RenderingPipeline::BindShader(ShaderType type, int ID, IParameterManager* pParameterManager){
 	Renderer* pRenderer = Renderer::Get();
 	Shader* pShader = pRenderer->GetShader(ID);
 
-	// Record the shader ID for use later on
 	ProgrammableStage[type]->DesiredState.ShaderProgram.Set(ID);
 
-	// Check if the shader has a valid identifier
 	if (pShader){
-		// Perform the actual binding to the pipeline, and then bind all needed
-		// parameters.
-
 		if (pShader->GetType() == type){
-			// Before binding the shader, have it update its required parameters.  These
-			// parameters will then be bound to the pipeline after the shader is bound.
-
-			//pShader->GetReflection()->BindParameters(type, this, pParamManager);
+			pShader->GetReflection()->BindParameters(type, this, pParameterManager);
 		}
 		else{
-			//Log::Get().Write(L"Tried to set the wrong type of shader ID!");
+
 		}
 	}
 }

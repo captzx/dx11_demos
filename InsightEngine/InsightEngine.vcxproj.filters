@@ -56,18 +56,6 @@
     <Filter Include="Objects\Scene Objects">
       <UniqueIdentifier>{6fdb4c1d-592e-4ba0-b8b1-bac9f9bbbc93}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Rendering\Pipeline System\Stages\Fixed Stages\1.ImputAssemblerStage">
-      <UniqueIdentifier>{c4b3fcec-df94-4726-8d09-d99fee946a2e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Rendering\Pipeline System\Stages\Fixed Stages\5.StreamOutputStage">
-      <UniqueIdentifier>{d46f928b-6a20-49a4-8ff4-e1ea84853c90}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Rendering\Pipeline System\Stages\Fixed Stages\6.RasterizerStage">
-      <UniqueIdentifier>{00a25834-275e-4756-81d8-8d2334e1e47c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Rendering\Pipeline System\Stages\Fixed Stages\8.OutputMergeStage">
-      <UniqueIdentifier>{52740764-f080-4c7b-9a43-3540648d729e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Rendering\Pipeline System\Stages\Programmable Stages\2.VertexShaderStage">
       <UniqueIdentifier>{2250f46f-c8b6-4c89-a2b5-b8b486133329}</UniqueIdentifier>
     </Filter>
@@ -181,9 +169,6 @@
     <ClInclude Include="PipeTexture.h">
       <Filter>Rendering\Resource System\Textures</Filter>
     </ClInclude>
-    <ClInclude Include="OutputMergerStage.h">
-      <Filter>Rendering\Pipeline System\Stages\Fixed Stages\8.OutputMergeStage</Filter>
-    </ClInclude>
     <ClInclude Include="TStateMonitor.h">
       <Filter>Rendering\Pipeline System\Stages\Common</Filter>
     </ClInclude>
@@ -192,12 +177,6 @@
     </ClInclude>
     <ClInclude Include="PipeView.h">
       <Filter>Rendering\Resource System\Resource Views</Filter>
-    </ClInclude>
-    <ClInclude Include="InputAssemblerStage.h">
-      <Filter>Rendering\Pipeline System\Stages\Fixed Stages\1.ImputAssemblerStage</Filter>
-    </ClInclude>
-    <ClInclude Include="RasterizerStage.h">
-      <Filter>Rendering\Pipeline System\Stages\Fixed Stages\6.RasterizerStage</Filter>
     </ClInclude>
     <ClInclude Include="ViewPort.h">
       <Filter>Rendering</Filter>
@@ -222,6 +201,18 @@
     </ClInclude>
     <ClInclude Include="D3DEnumConversion.h">
       <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="OutputMergerStage.h">
+      <Filter>Rendering\Pipeline System\Stages\Fixed Stages</Filter>
+    </ClInclude>
+    <ClInclude Include="InputAssemblerStage.h">
+      <Filter>Rendering\Pipeline System\Stages\Fixed Stages</Filter>
+    </ClInclude>
+    <ClInclude Include="RasterizerStage.h">
+      <Filter>Rendering\Pipeline System\Stages\Fixed Stages</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderParameter.h">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -303,17 +294,8 @@
     <ClCompile Include="PipeTexture.cpp">
       <Filter>Rendering\Resource System\Textures</Filter>
     </ClCompile>
-    <ClCompile Include="OutputMergerStage.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Fixed Stages\8.OutputMergeStage</Filter>
-    </ClCompile>
     <ClCompile Include="PipeView.cpp">
       <Filter>Rendering\Resource System\Resource Views</Filter>
-    </ClCompile>
-    <ClCompile Include="InputAssemblerStage.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Fixed Stages\1.ImputAssemblerStage</Filter>
-    </ClCompile>
-    <ClCompile Include="RasterizerStage.cpp">
-      <Filter>Rendering\Pipeline System\Stages\Fixed Stages\6.RasterizerStage</Filter>
     </ClCompile>
     <ClCompile Include="ViewPort.cpp">
       <Filter>Rendering</Filter>
@@ -338,6 +320,18 @@
     </ClCompile>
     <ClCompile Include="D3DEnumConversion.cpp">
       <Filter>Rendering\Pipeline System\Stages\Programmable Stages\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="OutputMergerStage.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Fixed Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="InputAssemblerStage.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Fixed Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="RasterizerStage.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Fixed Stages</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderParameter.cpp">
+      <Filter>Rendering\Pipeline System\Stages\Programmable Stages</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

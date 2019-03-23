@@ -5,7 +5,8 @@ using namespace insight;
 
 ProgrammableStageState::ProgrammableStageState() :
 	ShaderProgram(-1),
-	_pDesiredState(nullptr){
+	_pDesiredState(nullptr),
+	ConstantBuffers(nullptr){
 
 	Clear();
 }
@@ -22,6 +23,8 @@ void ProgrammableStageState::SetDesired(ProgrammableStageState* pState){
 	_pDesiredState = pState;
 
 	ShaderProgram.SetDesired(&_pDesiredState->ShaderProgram);
+	ConstantBuffers.SetDesired(&_pDesiredState->ConstantBuffers);
+	//....
 }
 
 void ProgrammableStageState::Reset(){

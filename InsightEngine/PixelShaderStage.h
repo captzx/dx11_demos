@@ -11,6 +11,6 @@ namespace insight {
 		virtual ShaderType GetType();
 
 		virtual void BindShaderProgram(ID3D11DeviceContext*) override;
-		virtual void BindConstantBuffers(ID3D11DeviceContext* pContext, int count) override;
+		virtual void BindConstantBuffers(ID3D11DeviceContext* pContext, int count) override {}
 	};
 }

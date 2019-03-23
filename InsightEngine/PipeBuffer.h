@@ -69,13 +69,24 @@ namespace insight {
 		int _iIndexCount;
 	};
 
-
 	class RenderingPipeline;
-	class ConstantBufferMapping;
+	class RenderParameter;
+	struct ConstantBufferMapping{
+		RenderParameter* pParameter;
+		unsigned int offset;
+		unsigned int size;
+		D3D_SHADER_VARIABLE_CLASS varclass;
+		unsigned int elements;
+		unsigned int valueID;
+	};
+
 	class IParameterManager;
 	class ConstantBuffer : public PipeBuffer {
 	public:
-		ConstantBuffer(ComPtr<ID3D11Buffer> pBuffer) { _pBuffer = pBuffer; }
+		ConstantBuffer(ComPtr<ID3D11Buffer> pBuffer):
+			_bAutoUpdate(true) { 
+			_pBuffer = pBuffer;
+		}
 		virtual ~ConstantBuffer() {}
 
 		virtual PipeResourceType GetType() override { return PRT_CONSTANTBUFFER; }
@@ -88,7 +99,7 @@ namespace insight {
 		bool GetAutoUpdate();
 
 	protected:
-		bool									m_bAutoUpdate;
-		std::vector< ConstantBufferMapping >	m_Mappings;
+		bool _bAutoUpdate;
+		std::vector<ConstantBufferMapping> _Mappings;
 	};
 }

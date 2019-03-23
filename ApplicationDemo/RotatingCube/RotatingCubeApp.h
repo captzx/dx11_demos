@@ -2,11 +2,17 @@
 #include "Application.h"
 
 namespace insight {
+	struct CB {
+		XMMATRIX w;
+		XMMATRIX v;
+		XMMATRIX p;
+	};
+
 	class Renderer;
 	class Window;
 	class RenderEffect;
 	class PipeResourceProxy;
-	typedef std::shared_ptr<PipeResourceProxy> ResourcePtr;
+	typedef std::shared_ptr<PipeResourceProxy> std::shared_ptr<PipeResourceProxy>;
 	class RotatingCubeApp : public Application {
 	public:
 		virtual bool ConfigureEngineComponent() override;
@@ -22,11 +28,14 @@ namespace insight {
 		Window* _pWindow = nullptr;
 
 		int	_iSwapChain;
-		ResourcePtr _pRenderTargetView;
-		ResourcePtr _pDepthStencilView;
+		std::shared_ptr<PipeResourceProxy> _pRenderTargetView;
+		std::shared_ptr<PipeResourceProxy> _pDepthStencilView;
 		RenderEffect* _pEffect;
 		int _iVertexLayout;
-		ResourcePtr _pVertexBuffer;
-		ResourcePtr _pIndexBuffer;
+		std::shared_ptr<PipeResourceProxy> _pVertexBuffer;
+		std::shared_ptr<PipeResourceProxy> _pIndexBuffer;
+		std::shared_ptr<PipeResourceProxy> _pConstantBuffer;
+
+		CB cb;
 	};
 }

@@ -12,6 +12,8 @@ namespace insight {
 	enum ShaderType;
 	class RenderParameter;
 	class IParameterManager;
+	class PipeResource;
+	class ConstantBuffer;
 	class RenderingPipeline {
 	public:
 		RenderingPipeline();
@@ -22,19 +24,17 @@ namespace insight {
 
 		void ClearColorBuffers(const FLOAT ColorRGBA[4]);
 		void ClearDepthStencilBuffers(float depth = 1.0f, UINT stencil = 0);
-		//void UpdateSubresource(ID3D11Buffer * cb, ConstantBuffer* cBuffer);
+		void UpdateSubresource(ConstantBuffer* cBuffer, void*);
 		void ApplyRenderTargets();
 
-		void BindShader(ShaderType type, int ID);
+		void BindShader(ShaderType type, int ID, IParameterManager* pParameterManager);
 
 		void ClearPipelineResources();
 		void ApplyPipelineResources();
 
 		void BindConstantBufferParameter(ShaderType type, RenderParameter* pParam, UINT slot, IParameterManager* pParamManager);
 
-		void Draw(RenderEffect* effect, ResourcePtr vb, ResourcePtr ib,
-			int inputLayout, D3D11_PRIMITIVE_TOPOLOGY primType,
-			UINT vertexStride, UINT numIndices);
+		void Draw(RenderEffect* effect, std::shared_ptr<PipeResourceProxy> vb, std::shared_ptr<PipeResourceProxy> ib, int inputLayout, D3D11_PRIMITIVE_TOPOLOGY primType, UINT vertexStride, UINT numIndices, IParameterManager* pParameterManager);
 
 		D3D11_MAPPED_SUBRESOURCE MapResource(PipeResource* pPipeResource, UINT subresource, D3D11_MAP actions, UINT flags);
 		void UnMapResource(PipeResource* pPipeResource, UINT subresource);

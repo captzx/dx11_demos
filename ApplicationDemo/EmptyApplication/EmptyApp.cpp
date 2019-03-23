@@ -12,45 +12,12 @@
 #include "PipeTextureDesc.h"
 #include "PipeBuffer.h"
 
+#include "Geometry.h"
+#include "ParameterManager.h"
+
 using namespace insight;
 
 EmptyApp AppInstance;
-
-
-void EmptyApp::Initialize() {
-	_pWindow->SetCaption(GetName());
-
-	{
-		Vertex vertices[] =
-		{
-			{ XMFLOAT3(0.0f, 0.5f, 0.5f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },
-			{ XMFLOAT3(0.5f, -0.5f, 0.5f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
-			{ XMFLOAT3(-0.5f, -0.5f, 0.5f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) }
-		};
-		D3D11_SUBRESOURCE_DATA vd;
-		vd.pSysMem = vertices;
-
-		PipeBufferDesc vbd;
-		vbd.SetAsVertexBuffer(3 * sizeof(Vertex));
-		_pVertexBuffer = _pRenderer->CreateVertexBuffer(&vbd, &vd);
-	}
-
-	{
-
-		UINT indices[] =
-		{
-			0,1,2
-		};
-		D3D11_SUBRESOURCE_DATA data;
-		data.pSysMem = indices;
-		data.SysMemPitch = 0;
-		data.SysMemSlicePitch = 0;
-
-		PipeBufferDesc ibd;
-		ibd.SetAsIndexBuffer(sizeof(UINT) * 3, false);
-		_pIndexBuffer = _pRenderer->CreateIndexBuffer(&ibd, &data);
-	}
-}
 
 bool EmptyApp::ConfigureEngineComponent() {
 	int height = 600;
@@ -87,7 +54,7 @@ bool EmptyApp::ConfigureEngineComponent() {
 	_pEffect->SetVertexShader(_pRenderer->LoadShader(VERTEX_SHADER, L"..//CommonData//Shaders//Triangle.hlsl", "VS", "vs_5_0"));
 	_pEffect->SetPixelShader(_pRenderer->LoadShader(PIXEL_SHADER, L"..//CommonData//Shaders//Triangle.hlsl", "PS", "ps_5_0"));
 
-	D3D11_INPUT_ELEMENT_DESC vertexDesc[] ={
+	D3D11_INPUT_ELEMENT_DESC vertexDesc[] = {
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
@@ -113,20 +80,69 @@ bool EmptyApp::ConfigureEngineComponent() {
 
 	return true;
 }
-void EmptyApp::ShutdownEngineComponent() {
-	SAFE_DELETE(_pWindow);
-	SAFE_DELETE(_pRenderer);
-	SAFE_DELETE(_pEffect);
+void EmptyApp::Initialize() {
+	_pWindow->SetCaption(GetName());
+
+	{
+		Vertex_Pos_Color vertices[] =
+		{
+			{ XMFLOAT3(0.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) },
+			{ XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f) },
+			{ XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f) }
+		};
+		D3D11_SUBRESOURCE_DATA vd;
+		vd.pSysMem = vertices;
+
+		PipeBufferDesc vbd;
+		vbd.SetAsVertexBuffer(3 * sizeof(Vertex_Pos_Color));
+		_pVertexBuffer = _pRenderer->CreateVertexBuffer(&vbd, &vd);
+	}
+
+	{
+
+		UINT indices[] =
+		{
+			0,1,2
+		};
+		D3D11_SUBRESOURCE_DATA data;
+		data.pSysMem = indices;
+		data.SysMemPitch = 0;
+		data.SysMemSlicePitch = 0;
+
+		PipeBufferDesc ibd;
+		ibd.SetAsIndexBuffer(sizeof(UINT) * 3, false);
+		_pIndexBuffer = _pRenderer->CreateIndexBuffer(&ibd, &data);
+	}
+
+	if (!_pVSConstBuffer) _pVSConstBuffer = new VSConstBuffer();
+	XMStoreFloat4x4(&_pVSConstBuffer->world, XMMatrixIdentity());
+	XMVECTOR pos = XMVectorSet(0.0f, 0.0f, -1.0f, 1.0f);
+	XMVECTOR target = XMVectorZero();
+	XMVECTOR up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+	XMStoreFloat4x4(&_pVSConstBuffer->view, XMMatrixTranspose(XMMatrixLookAtLH(pos, target, up)));
+	XMStoreFloat4x4(&_pVSConstBuffer->proj, XMMatrixTranspose(XMMatrixPerspectiveFovLH(XM_PIDIV2, 800.0f / 600, 1.0f, 1000.0f)));
+
+	_pRenderer->GetParameterManager()->SetWorldMatrixParameter(&_pVSConstBuffer->world);
+	_pRenderer->GetParameterManager()->SetViewMatrixParameter(&_pVSConstBuffer->view);
+	_pRenderer->GetParameterManager()->SetProjMatrixParameter(&_pVSConstBuffer->proj);
 }
+
 void EmptyApp::Update() {
 	_pRenderer->GetPipeline()->ClearColorBuffers(Colors::AliceBlue);
 	_pRenderer->GetPipeline()->ClearDepthStencilBuffers();
 	
-	UINT stride = sizeof(Vertex);
-	_pRenderer->GetPipeline()->Draw(_pEffect, _pVertexBuffer, _pIndexBuffer,_iVertexLayout, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST, stride, 3);
+	UINT stride = sizeof(Vertex_Pos_Color);
+	_pRenderer->GetPipeline()->Draw(_pEffect, _pVertexBuffer, _pIndexBuffer,_iVertexLayout, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST, stride, 3, _pRenderer->GetParameterManager());
 	_pRenderer->Present(_pWindow->GetHandle(), _pWindow->GetSwapChain());
 }
+
 void EmptyApp::Shutdown() {
+}
+void EmptyApp::ShutdownEngineComponent() {
+	SAFE_DELETE(_pWindow);
+	SAFE_DELETE(_pRenderer);
+	SAFE_DELETE(_pEffect);
 }
 
 std::wstring EmptyApp::GetName() {

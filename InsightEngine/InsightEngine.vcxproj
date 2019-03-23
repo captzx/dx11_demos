@@ -150,6 +150,7 @@
     <ClInclude Include="RenderEffect.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="RenderingPipeline.h" />
+    <ClInclude Include="RenderParameter.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderFactory.h" />
@@ -195,6 +196,7 @@
     <ClCompile Include="RenderEffect.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="RenderingPipeline.cpp" />
+    <ClCompile Include="RenderParameter.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderFactory.cpp" />

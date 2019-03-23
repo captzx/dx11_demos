@@ -17,6 +17,8 @@ namespace insight {
 		PIXEL_SHADER_MSK = 0x0010,
 		COMPUTE_SHADER_MSK = 0x0020
 	};
+
+	class ShaderReflection;
 	class Shader {
 	public:
 		Shader();
@@ -26,13 +28,16 @@ namespace insight {
 		bool IsExist(std::wstring fileName, std::string function, std::string model);
 		void Set(std::wstring fileName, std::string function, std::string model);
 
+		ShaderReflection* GetReflection();
 		void SetCompiledShader(ID3DBlob* pCompiledShader);
+		void SetReflection(ShaderReflection* psr);
 		ID3DBlob* GetCompiledShader() const;
 	protected:
 		std::wstring _wsFileName;
 		std::string _sFunction;
 		std::string _sShaderModel;
 		std::string sShaderText;
-		ID3DBlob* _pCompiledShader = nullptr;
+		ID3DBlob* _pCompiledShader = nullptr; 
+		ShaderReflection* _pReflection = nullptr;
 	};
 }

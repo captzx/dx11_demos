@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Shader.h"
 
+#include "ShaderReflection.h"
+
 using namespace insight;
 
 Shader::Shader() {
@@ -25,8 +27,16 @@ void Shader::Set(std::wstring fileName, std::string function, std::string model)
 	_sShaderModel = model;
 }
 
+ShaderReflection* Shader::GetReflection() {
+	return _pReflection;
+}
+
 void insight::Shader::SetCompiledShader(ID3DBlob * pCompiledShader){
 	_pCompiledShader = pCompiledShader;
+}
+
+void insight::Shader::SetReflection(ShaderReflection * psr){
+	_pReflection = psr;
 }
 
 ID3DBlob* insight::Shader::GetCompiledShader() const{

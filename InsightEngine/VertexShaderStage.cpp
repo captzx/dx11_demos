@@ -33,7 +33,5 @@ void VertexShaderStage::BindShaderProgram(ID3D11DeviceContext* pContext){
 }
 
 void VertexShaderStage::BindConstantBuffers(ID3D11DeviceContext * pContext, int count){
-	pContext->VSSetConstantBuffers(DesiredState.ConstantBuffers.GetStartSlot(),
-		DesiredState.ConstantBuffers.GetRange(),
-		DesiredState.ConstantBuffers.GetFirstSlotLocation());
+	pContext->VSSetConstantBuffers(DesiredState.ConstantBuffers.GetStartSlot(), DesiredState.ConstantBuffers.GetRange(), DesiredState.ConstantBuffers.GetFirstSlotLocation());
 }

@@ -5,6 +5,9 @@
 #include "RenderingPipeline.h"
 
 #include "PipeBuffer.h"
+#include "ParameterManager.h"
+#include "ShaderReflection.h"
+#include "RenderParameter.h"
 
 using namespace insight;
 
@@ -24,6 +27,8 @@ void RenderEffect::SetVertexShader(int index) {
 			// Log::Get().Write(L"Trying to bind a non-vertex shader to the vertex shader...");
 		}
 	}
+
+	_UpdateConstantBufferList();
 }
 void RenderEffect::SetPixelShader(int index) {
 	_aiIndices[PIXEL_SHADER] = index;
@@ -34,16 +39,51 @@ void RenderEffect::SetPixelShader(int index) {
 			// Log::Get().Write(L"Trying to bind a non-pixel shader to the pixel shader...");
 		}
 	}
+
+	_UpdateConstantBufferList();
 }
 
-void RenderEffect::ConfigurePipeline(RenderingPipeline* pPipeline) {
-	for (auto pcb : _vpConstBuffers) {
+void RenderEffect::_UpdateConstantBufferList() {
+	_vpConstBuffers.empty();
 
-		pcb->EvaluateMappings(pPipeline);
+	for (int i = 0; i < 6; ++i) {
+		Shader* pShader = _apShaders[i];
+
+		if (pShader) {
+			ShaderReflection* pReflection = pShader->GetReflection();
+
+			for (size_t j = 0; j < pReflection->ConstantBuffers.size(); ++j) {
+				RenderParameter* pParameter = pReflection->ConstantBuffers[i].pParamRef;
+
+				bool bAlreadyThere = false;
+
+				for (auto pExistingParameter : _vpConstBuffers) {
+					if (pExistingParameter == pParameter) {
+						bAlreadyThere = true;
+						break;
+					}
+				}
+
+				if (!bAlreadyThere) {
+					_vpConstBuffers.push_back(pParameter);
+				}
+				else {
+					// ...
+				}
+
+			}
+		}
+	}
+}
+
+void RenderEffect::ConfigurePipeline(RenderingPipeline* pPipeline, IParameterManager* pParameterManager) {
+	for (auto pParameter : _vpConstBuffers) {
+		ConstantBuffer* cbuffer = Renderer::Get()->GetConstantBufferByIndex(pParameterManager->GetConstantBufferParameter(pParameter));
+		cbuffer->EvaluateMappings(pPipeline, pParameterManager);
 	}
 
-	pPipeline->BindShader(VERTEX_SHADER, _aiIndices[VERTEX_SHADER]);
-	pPipeline->BindShader(PIXEL_SHADER, _aiIndices[PIXEL_SHADER]);
+	pPipeline->BindShader(VERTEX_SHADER, _aiIndices[VERTEX_SHADER], pParameterManager);
+	pPipeline->BindShader(PIXEL_SHADER, _aiIndices[PIXEL_SHADER], pParameterManager);
 }
 
 int RenderEffect::GetVertexShader() {

@@ -57,6 +57,4 @@ namespace insight {
 		RenderTargetViewDesc*   _pRTVDesc = nullptr;
 		UnorderedAccessViewDesc*_pUAVDesc = nullptr;
 	};
-
-	typedef std::shared_ptr<PipeResourceProxy> ResourcePtr;
 }

@@ -1,165 +1,183 @@
 #include "pch.h"
 #include "ParameterManager.h"
 
+#include "PipeResourceProxy.h"
+#include "RenderParameter.h"
+
 using namespace insight;
 
-#pragma region RenderParameter
-RenderParameter::RenderParameter()
-{
-	for (int i = 0; i < NUM_THREADS + 1; i++) {
-		m_auiValueID[i] = 0;
+std::map<std::wstring, RenderParameter*> ParameterManager::sParameters;
+
+ParameterManager::ParameterManager(unsigned int id) {
+	_uiID = id;
+	_pManagerParent = nullptr;
+
+	_pWorldMatrix = GetMatrixParameterRef(std::wstring(L"WorldMatrix"));
+	_pViewMatrix = GetMatrixParameterRef(std::wstring(L"ViewMatrix"));
+	_pProjMatrix = GetMatrixParameterRef(std::wstring(L"ProjMatrix"));
+}
+ParameterManager::~ParameterManager() {
+	std::map< std::wstring, RenderParameter* >::iterator iter = sParameters.begin();
+	while (iter != sParameters.end()){
+		SAFE_DELETE(iter->second);
+		++iter;
+	}
+
+	sParameters.clear();
+}
+
+unsigned int ParameterManager::GetID(){
+	return _uiID;
+}
+void ParameterManager::SetMatrixParameter(RenderParameter* pParameter, XMFLOAT4X4* pMatrix){
+	if (pParameter->GetParameterType() == MATRIX)
+		pParameter->SetParameterData(reinterpret_cast<void*>(pMatrix), GetID());
+	else {
+		// name collision;
 	}
 }
-//--------------------------------------------------------------------------------
-RenderParameter::RenderParameter(RenderParameter& copy)
-{
-	m_sParameterName = copy.m_sParameterName;
-}
-//--------------------------------------------------------------------------------
-RenderParameter::~RenderParameter()
-{
-}
-//--------------------------------------------------------------------------------
-std::wstring& RenderParameter::GetName()
-{
-	return(m_sParameterName);
-}
-//--------------------------------------------------------------------------------
-void RenderParameter::SetName(const std::wstring& name)
-{
-	m_sParameterName = name;
-}
-//--------------------------------------------------------------------------------
-void RenderParameter::InitializeParameterData(void* pData)
-{
-	for (int i = 0; i <= NUM_THREADS; i++)
-		SetParameterData(pData, i);
-}
-//--------------------------------------------------------------------------------
-//void RenderParameter::UnInitializeParameterData( void* pData )
-//{
-//	for ( int i = 0; i <= NUM_THREADS; i++ )
-//		ResetParameterData( pData, i );
-//}
-//--------------------------------------------------------------------------------
-unsigned int RenderParameter::GetValueID(unsigned int threadID)
-{
-	assert(threadID >= 0);
-	assert(threadID < NUM_THREADS + 1);
+void ParameterManager::SetMatrixParameter(const std::wstring& name, XMFLOAT4X4* pMatrix) {
+	RenderParameter* pParameter = GetRenderParameterRef(name);
 
-	return(m_auiValueID[threadID]);
-}
-//--------------------------------------------------------------------------------
-//RenderParameter* RenderParameter::CreateCopy()
-//{
-//	RenderParameter* pParam = 0;
-//
-//	switch ( this->GetParameterType() )
-//	{
-//	case VECTOR:
-//		pParam = new VectorParameterDX11();
-//		pParam->SetName( GetName() );
-//		pParam->UpdateValue( this );
-//		break;
-//	case MATRIX:
-//		pParam = new MatrixParameterDX11();
-//		pParam->SetName( GetName() );
-//		pParam->UpdateValue( this );
-//		break;
-//	case MATRIX_ARRAY:
-//		pParam = new MatrixArrayParameterDX11( ((MatrixArrayParameterDX11*)this)->GetMatrixCount() );
-//		pParam->SetName( GetName() );
-//		pParam->UpdateValue( this );
-//		break;
-//	case SHADER_RESOURCE:
-//		pParam = new ShaderResourceParameterDX11();
-//		pParam->SetName( GetName() );
-//		pParam->UpdateValue( this );
-//		break;
-//	case UNORDERED_ACCESS:
-//		pParam = new UnorderedAccessParameterDX11();
-//		pParam->SetName( GetName() );
-//		pParam->UpdateValue( this );
-//		break;
-//	case CBUFFER:
-//		pParam = new ConstantBufferParameterDX11();
-//		pParam->SetName( GetName() );
-//		pParam->UpdateValue( this );
-//		break;
-//	case SAMPLER:
-//		pParam = new SamplerParameterDX11();
-//		pParam->SetName( GetName() );
-//		pParam->UpdateValue( this );
-//		break;
-//	}
-//
-//	return( pParam );
-//}
-//--------------------------------------------------------------------------------
+	if (!pParameter) {
+		pParameter = new MatrixParameter();
+		pParameter->SetName(name);
 
-#pragma endregion
+		sParameters[name] = pParameter;
+
+		pParameter->InitializeParameterData(reinterpret_cast<void*>(pParameter));
+	}
+	else {
+		if (pParameter->GetParameterType() == MATRIX) {
+			pParameter->SetParameterData(reinterpret_cast<void*>(pParameter), GetID());
+		}
+		// else name collision
+	}
+}
+
+void ParameterManager::SetConstantBufferParameter(const std::wstring& name, std::shared_ptr<PipeResourceProxy> resource) {
+	RenderParameter* pParameter = sParameters[name];
+
+	if (!pParameter) {
+		pParameter = new ConstantBufferParameter();
+		pParameter->SetName(name);
+		sParameters[name] = reinterpret_cast<RenderParameter*>(pParameter);
+
+		pParameter->InitializeParameterData(reinterpret_cast<void*>(resource->_iResource));
+	}
+	else {
+		if (pParameter->GetParameterType() == CBUFFER)
+			pParameter->SetParameterData(reinterpret_cast<void*>(resource->_iResource), GetID());
+		// else // name	collision
+	}
+}
+void ParameterManager::SetConstantBufferParameter(RenderParameter* pParameter, std::shared_ptr<PipeResourceProxy> resource) {
+	if (pParameter->GetParameterType() == CBUFFER) {
+		pParameter->SetParameterData(reinterpret_cast<void*>(resource->_iResource), GetID());
+	}
+	// else name collision
+}
+
+RenderParameter* ParameterManager::GetRenderParameterRef(const std::wstring& name) {
+	RenderParameter* pParameter = sParameters[name];
+
+	if (!pParameter && _pManagerParent) {
+		pParameter = _pManagerParent->GetRenderParameterRef(name);
+	}
+
+	return pParameter;
+}
+MatrixParameter* ParameterManager::GetMatrixParameterRef(const std::wstring name) {
+	RenderParameter* pParameter = GetRenderParameterRef(name);
+
+	if (!pParameter) {
+		pParameter = new MatrixParameter();
+		pParameter->SetName(name);
+
+		sParameters[name] = pParameter;
+	}
+
+	return reinterpret_cast<MatrixParameter*>(pParameter);
+}
+ConstantBufferParameter* ParameterManager::GetConstantBufferParameterRef(const std::wstring name) {
+	RenderParameter* pParameter = GetRenderParameterRef(name);
+
+	if (!pParameter) {
+		pParameter = new ConstantBufferParameter();
+		pParameter->SetName(name);
+
+		sParameters[name] = pParameter;
+	}
+
+	return reinterpret_cast<ConstantBufferParameter*>(pParameter);
+}
 
 
-#pragma region ConstantBufferParameter
-ConstantBufferParameter::ConstantBufferParameter()
-{
-	for (int i = 0; i <= NUM_THREADS; i++)
-		m_iCBuffer[i] = -1;
-}
-//--------------------------------------------------------------------------------
-ConstantBufferParameter::ConstantBufferParameter(ConstantBufferParameter& copy)
-{
-	for (int i = 0; i <= NUM_THREADS; i++)
-		m_iCBuffer[i] = copy.m_iCBuffer[i];
-}
-//--------------------------------------------------------------------------------
-ConstantBufferParameter::~ConstantBufferParameter()
-{
-}
-//--------------------------------------------------------------------------------
-void ConstantBufferParameter::SetParameterData(void* pData, unsigned int threadID)
-{
-	assert(threadID >= 0);
-	assert(threadID < NUM_THREADS + 1);
+XMMATRIX ParameterManager::GetMatrixParameter(RenderParameter* pParameter) {
+	XMMATRIX result = XMMatrixIdentity();
 
-	m_iCBuffer[threadID] = *reinterpret_cast<int*>(pData);
-}
-//--------------------------------------------------------------------------------
-//void ConstantBufferParameter::ResetParameterData( void* pData, unsigned int threadID )
-//{
-//	assert( threadID >= 0 );
-//	assert( threadID < NUM_THREADS+1 );
-//
-//	if ( m_iCBuffer[threadID] == *reinterpret_cast<int*>( pData ) ) {
-//		m_iCBuffer[threadID] = -1;
-//	}
-//}
-//--------------------------------------------------------------------------------
-const ParameterType ConstantBufferParameter::GetParameterType()
-{
-	return(CBUFFER);
-}
-//--------------------------------------------------------------------------------
-int ConstantBufferParameter::GetIndex(unsigned int threadID)
-{
-	assert(threadID >= 0);
-	assert(threadID < NUM_THREADS + 1);
+	if (pParameter->GetParameterType() == MATRIX) {
+		result = reinterpret_cast<MatrixParameter*>(pParameter)->GetMatrix(GetID());
+	}
 
-	return(m_iCBuffer[threadID]);
+	return result;
 }
-//--------------------------------------------------------------------------------
-//void ConstantBufferParameter::UpdateValue( RenderParameter* pParameter, unsigned int threadID )
-//{
-//	assert( threadID >= 0 );
-//	assert( threadID < NUM_THREADS+1 );
-//
-//	if ( pParameter )
-//	{
-//		if ( ( pParameter->GetParameterType() == CBUFFER ) && ( pParameter->GetName() == this->GetName() ) )
-//		{
-//			ConstantBufferParameter* pBuffer = (ConstantBufferParameter*)pParameter;
-//			m_iCBuffer[threadID] = pBuffer->GetIndex( threadID );
-//		}
-//	}
-//}
-#pragma endregion
+
+int ParameterManager::GetConstantBufferParameter(RenderParameter* pParameter) {
+	int result = -1;
+
+	if (pParameter->GetParameterType() == CBUFFER) {
+		result = reinterpret_cast<ConstantBufferParameter*>(pParameter)->GetResourceIndex(GetID());
+	}
+
+	return result;
+}
+
+XMMATRIX ParameterManager::GetMatrixParameter(const std::wstring name) {
+	XMMATRIX result = XMMatrixIdentity();
+
+	RenderParameter* pParameter = GetRenderParameterRef(name);
+
+	if (!pParameter) {
+		if (pParameter->GetParameterType() == MATRIX) {
+			result = reinterpret_cast<MatrixParameter*>(pParameter)->GetMatrix(GetID());
+		}
+	}
+	else {
+		pParameter = new MatrixParameter();
+		pParameter->SetName(name);
+
+		sParameters[name] = pParameter;
+	}
+
+	return result;
+}
+
+int ParameterManager::GetConstantBufferParameter(const std::wstring name) {
+	int result = -1;
+
+	RenderParameter* pParameter = GetRenderParameterRef(name);
+
+	if (pParameter) {
+		if (pParameter->GetParameterType() == CBUFFER) {
+			result = reinterpret_cast<ConstantBufferParameter*>(pParameter)->GetResourceIndex(GetID());
+		}
+	}
+	else {
+		pParameter = new ConstantBufferParameter();
+		pParameter->SetName(name);
+		sParameters[name] = pParameter;
+	}
+
+	return result;
+}
+
+void ParameterManager::SetWorldMatrixParameter(XMFLOAT4X4* pMatrix) {
+	SetMatrixParameter(_pWorldMatrix, pMatrix);
+}
+void ParameterManager::SetViewMatrixParameter(XMFLOAT4X4* pMatrix) {
+	SetMatrixParameter(_pViewMatrix, pMatrix);
+}
+void ParameterManager::SetProjMatrixParameter(XMFLOAT4X4* pMatrix) {
+	SetMatrixParameter(_pProjMatrix, pMatrix);
+}

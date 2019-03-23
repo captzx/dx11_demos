@@ -20,7 +20,7 @@ namespace insight {
 
 	class SwapChain {
 	public:
-		explicit SwapChain(ComPtr<IDXGISwapChain> pSwapChain, ResourcePtr resource) {
+		explicit SwapChain(ComPtr<IDXGISwapChain> pSwapChain, std::shared_ptr<PipeResourceProxy> resource) {
 			_pSwapChain = pSwapChain;
 			_Resource = resource;
 		}
@@ -31,10 +31,10 @@ namespace insight {
 		IDXGISwapChain* Get() {
 			return _pSwapChain.Get();
 		}
-		ResourcePtr GetBuffer() { return _Resource; }
+		std::shared_ptr<PipeResourceProxy> GetBuffer() { return _Resource; }
 
 	protected:
 		ComPtr<IDXGISwapChain> _pSwapChain;
-		ResourcePtr _Resource;
+		std::shared_ptr<PipeResourceProxy> _Resource;
 	};
 }

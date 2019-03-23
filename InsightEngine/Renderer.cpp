@@ -26,7 +26,8 @@ using namespace insight;
 Renderer* Renderer::_spRenderer = nullptr;
 
 Renderer::Renderer():
-	_pImmPipeline(new RenderingPipeline()){
+	_pImmPipeline(new RenderingPipeline()),
+	_pParameterManager(new ParameterManager(0)){
 	_spRenderer = this;
 }
 Renderer::~Renderer() {
@@ -89,6 +90,7 @@ bool Renderer::Initialize(D3D_DRIVER_TYPE driverType, D3D_FEATURE_LEVEL featureL
 	return hr;
 }
 void Renderer::Shutdown() {
+	SAFE_DELETE(_pParameterManager);
 	SAFE_DELETE(_pImmPipeline);
 
 	for (auto pResource : _pPipeResources)
@@ -129,13 +131,13 @@ int Renderer::CreateSwapChain(const SwapChainDesc& SCD) {
 	Texture2dDesc TextureDesc;
 	pSwapChainBuffer->GetDesc(&TextureDesc.Get());
 
-	ResourcePtr Proxy(new PipeResourceProxy(ResourceID, &TextureDesc, this));
+	std::shared_ptr<PipeResourceProxy> Proxy(new PipeResourceProxy(ResourceID, &TextureDesc, this));
 
 	_vSwapChains.push_back(new SwapChain(pSwapChain, Proxy));
 	return _vSwapChains.size() - 1;
 }
 
-ResourcePtr Renderer::CreateTexture2D(Texture2dDesc* pConfig, D3D11_SUBRESOURCE_DATA* pData,
+std::shared_ptr<PipeResourceProxy> Renderer::CreateTexture2D(Texture2dDesc* pConfig, D3D11_SUBRESOURCE_DATA* pData,
 	ShaderResourceViewDesc* pSRVConfig,
 	RenderTargetViewDesc* pRTVConfig,
 	UnorderedAccessViewDesc* pUAVConfig,
@@ -148,12 +150,12 @@ ResourcePtr Renderer::CreateTexture2D(Texture2dDesc* pConfig, D3D11_SUBRESOURCE_
 		pTex->SetDesiredDescription(pConfig->Get());
 
 		int ResourceID = _StoreNewResource(pTex);
-		ResourcePtr Proxy(new PipeResourceProxy(ResourceID, pConfig, this));
+		std::shared_ptr<PipeResourceProxy> Proxy(new PipeResourceProxy(ResourceID, pConfig, this));
 
 		return(Proxy);
 	}
 
-	return(ResourcePtr(new PipeResourceProxy()));
+	return(std::shared_ptr<PipeResourceProxy>(new PipeResourceProxy()));
 }
 
 int Renderer::CreateRenderTargetView(int ResourceID, D3D11_RENDER_TARGET_VIEW_DESC* pDesc) {
@@ -278,15 +280,14 @@ int Renderer::LoadShader(ShaderType type, LPCWSTR fileName, _In_ LPCSTR entryFun
 
 	ShaderReflection* pReflection = ShaderReflectionFactory::GenerateReflection(*pShaderWrapper);
 
-	pReflection->InitializeConstantBuffers(m_pParamMgr);
+	pReflection->InitializeConstantBuffers(_pParameterManager);
 
 	pShaderWrapper->SetReflection(pReflection);
-
 
 	return _pShaders.size() - 1;
 }
 
-ResourcePtr Renderer::CreateVertexBuffer(PipeBufferDesc* pDesc, D3D11_SUBRESOURCE_DATA* pData) {
+std::shared_ptr<PipeResourceProxy> Renderer::CreateVertexBuffer(PipeBufferDesc* pDesc, D3D11_SUBRESOURCE_DATA* pData) {
 	ComPtr<ID3D11Buffer> pvb = nullptr;
 
 	HRESULT hr = _pDevice->CreateBuffer(&pDesc->Get(), pData, &pvb);
@@ -296,56 +297,52 @@ ResourcePtr Renderer::CreateVertexBuffer(PipeBufferDesc* pDesc, D3D11_SUBRESOURC
 		pVertexBuffer->SetDesiredDescription(pDesc->Get());
 
 		int ResourceID = _StoreNewResource(pVertexBuffer);
-		ResourcePtr Proxy(new PipeResourceProxy(ResourceID, pDesc, this));
+		std::shared_ptr<PipeResourceProxy> Proxy(new PipeResourceProxy(ResourceID, pDesc, this));
 
 		return(Proxy);
 	}
 
-	return ResourcePtr();
+	return std::shared_ptr<PipeResourceProxy>();
 }
-ResourcePtr Renderer::CreateIndexBuffer(PipeBufferDesc* pDesc, D3D11_SUBRESOURCE_DATA* pData) {
-	ComPtr<ID3D11Buffer> ivb = nullptr;
+std::shared_ptr<PipeResourceProxy> Renderer::CreateIndexBuffer(PipeBufferDesc* pDesc, D3D11_SUBRESOURCE_DATA* pData) {
+	ComPtr<ID3D11Buffer> pib = nullptr;
 
-	HRESULT hr = _pDevice->CreateBuffer(&pDesc->Get(), pData, &ivb);
+	HRESULT hr = _pDevice->CreateBuffer(&pDesc->Get(), pData, &pib);
 
-	if (ivb) {
-		IndexBuffer* pIndexBuffer = new IndexBuffer(ivb);
+	if (pib) {
+		IndexBuffer* pIndexBuffer = new IndexBuffer(pib);
 		pIndexBuffer->SetDesiredDescription(pDesc->Get());
 
 		int ResourceID = _StoreNewResource(pIndexBuffer);
-		ResourcePtr Proxy(new PipeResourceProxy(ResourceID, pDesc, this));
+		std::shared_ptr<PipeResourceProxy> Proxy(new PipeResourceProxy(ResourceID, pDesc, this));
 
 		return(Proxy);
 	}
 
-	return ResourcePtr();
+	return std::shared_ptr<PipeResourceProxy>();
 }
-ResourcePtr Renderer::CreateConstantBuffer(PipeBufferDesc* pDesc, D3D11_SUBRESOURCE_DATA* pData, bool bAutoUpdate) {
-	ComPtr<ID3D11Buffer>cb = nullptr;
+std::shared_ptr<PipeResourceProxy> Renderer::CreateConstantBuffer(PipeBufferDesc * pDesc, D3D11_SUBRESOURCE_DATA * pData, bool bAutoUpdate){
+	ComPtr<ID3D11Buffer> pcb = nullptr;
+	HRESULT hr = _pDevice->CreateBuffer(&pDesc->Get(), pData, &pcb);
 
-	HRESULT hr = _pDevice->CreateBuffer(&pDesc->Get(), pData, &cb);
-
-	if (cb) {
-		ConstantBuffer* pConstantBuffer = new ConstantBuffer(cb);
+	if (pcb){
+		ConstantBuffer* pConstantBuffer = new ConstantBuffer(pcb);
 		pConstantBuffer->SetDesiredDescription(pDesc->Get());
-		pConstantBuffer->SetAutoUpdate(bAutoUpdate);
 
 		int ResourceID = _StoreNewResource(pConstantBuffer);
-		ResourcePtr Proxy(new PipeResourceProxy(ResourceID, pDesc, this));
+		std::shared_ptr<PipeResourceProxy> Proxy(new PipeResourceProxy(ResourceID, pDesc, this));
 
 		return(Proxy);
 	}
 
-	return ResourcePtr();
+	return(std::shared_ptr<PipeResourceProxy>(new PipeResourceProxy()));
 }
 
-
-int insight::Renderer::CreateViewPort(D3D11_VIEWPORT viewport){
+int Renderer::CreateViewPort(D3D11_VIEWPORT viewport){
 	_vViewPorts.emplace_back(viewport);
 
 	return(_vViewPorts.size() - 1);
 }
-
 
 void Renderer::Present(HWND hWnd, int SwapChainID, UINT SyncInterval, UINT PresentFlags){
 	unsigned int index = static_cast<unsigned int>(SwapChainID);
@@ -373,6 +370,9 @@ const ViewPort& Renderer::GetViewPort(int ID){
 
 	return(_vViewPorts[index]);
 }
+PipeResource* Renderer::GetResourceByIndex(int rid){
+	return _GetResourceByIndex(rid);
+}
 // ---------------------------------get----------------------------------
 Texture2D* Renderer::GetTexture2DByIndex(int rid) {
 	Texture2D* pResult = 0;
@@ -391,7 +391,7 @@ Texture2D* Renderer::GetTexture2DByIndex(int rid) {
 	return(pResult);
 }
 
-ResourcePtr Renderer::GetSwapChainResource(int ID){
+std::shared_ptr<PipeResourceProxy> Renderer::GetSwapChainResource(int ID){
 	unsigned int index = static_cast<unsigned int>(ID);
 
 	if (index < _vSwapChains.size())
@@ -399,7 +399,7 @@ ResourcePtr Renderer::GetSwapChainResource(int ID){
 
 	//Log::Get().Write(L"Tried to get an invalid swap buffer index texture ID!");
 
-	return(ResourcePtr(new PipeResourceProxy()));
+	return(std::shared_ptr<PipeResourceProxy>(new PipeResourceProxy()));
 }
 
 //ConstantBuffer*	Renderer::GetConstantBufferByIndex(int rid) {
@@ -447,13 +447,13 @@ IndexBuffer* Renderer::GetIndexBufferByIndex(int rid) {
 
 	return pResult;
 }
-ConstantBuffer* Renderer::GetConstantBufferByIndex(int rid) {
+ConstantBuffer* Renderer::GetConstantBufferByIndex(int rid){
 	ConstantBuffer* pResult = 0;
 
 	PipeResource* pResource = _GetResourceByIndex(rid);
 
 	if (pResource != NULL) {
-		if (pResource->GetType() != PRT_INDEXBUFFER) {
+		if (pResource->GetType() != PRT_CONSTANTBUFFER) {
 		}
 		else {
 			pResult = reinterpret_cast<ConstantBuffer*>(pResource);
@@ -462,6 +462,21 @@ ConstantBuffer* Renderer::GetConstantBufferByIndex(int rid) {
 
 	return pResult;
 }
+//ConstantBuffer* Renderer::GetConstantBufferByIndex(int rid) {
+//	ConstantBuffer* pResult = 0;
+//
+//	PipeResource* pResource = _GetResourceByIndex(rid);
+//
+//	if (pResource != NULL) {
+//		if (pResource->GetType() != PRT_INDEXBUFFER) {
+//		}
+//		else {
+//			pResult = reinterpret_cast<ConstantBuffer*>(pResource);
+//		}
+//	}
+//
+//	return pResult;
+//}
 RenderTargetView& Renderer::GetRenderTargetViewByIndex(int rid) {
 	return _pRenderTargetViews[rid];
 }

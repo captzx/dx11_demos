@@ -1,36 +1,35 @@
 #pragma once
 #include "Application.h"
-#include <string>
 #include "PipeResourceProxy.h"
 
 namespace insight {
-	struct Vertex {
-		XMFLOAT3 Pos;
-		XMFLOAT4 Color;
-	};
-
 	class RenderEffect;
 	class Renderer;
 	class Window;
+
+	struct VSConstBuffer;
 	class EmptyApp: public Application {
 	public:
 		virtual bool ConfigureEngineComponent() override;
-		virtual void ShutdownEngineComponent() override;
 		virtual void Initialize()override;
 		virtual void Update()override;
 		virtual void Shutdown()override;
+		virtual void ShutdownEngineComponent() override;
+		virtual std::wstring GetName() override;
 
-		std::wstring GetName() override;
 	private:
-		Renderer* _pRenderer = nullptr;
 		Window* _pWindow = nullptr;
+		Renderer* _pRenderer = nullptr;
 
 		int	_iSwapChain;
-		ResourcePtr _pRenderTargetView;
-		ResourcePtr _pDepthStencilView;
+		std::shared_ptr<PipeResourceProxy> _pRenderTargetView;
+		std::shared_ptr<PipeResourceProxy> _pDepthStencilView;
 		RenderEffect* _pEffect;
 		int _iVertexLayout;
-		ResourcePtr _pVertexBuffer; 
-		ResourcePtr _pIndexBuffer;
+		std::shared_ptr<PipeResourceProxy> _pVertexBuffer;
+		std::shared_ptr<PipeResourceProxy> _pIndexBuffer;
+		std::shared_ptr<PipeResourceProxy> _pConstantBuffer;
+
+		VSConstBuffer* _pVSConstBuffer;
 	};
 }
